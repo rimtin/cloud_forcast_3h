@@ -15,10 +15,10 @@
 
 <body>
   <div class="container">
+
     <div id="pdf-area">
 
-      <!-- PAGE 1 -->
-      <section class="pdf-section">
+      <section class="pdf-section first-section">
         <h1 class="center-title">3-Hourly Cloud Forecast Bulletin</h1>
 
         <h3 id="issue-time" class="issue-time"></h3>
@@ -90,7 +90,6 @@
         </table>
       </section>
 
-      <!-- PAGE 2: MAPS -->
       <section class="pdf-section maps-section">
         <h3 class="map-label">Cloud Forecast Map - 1</h3>
         <div class="map-wrapper">
@@ -111,18 +110,17 @@
         </div>
       </section>
 
-      <!-- PAGE 3: WEATHER SYSTEM -->
-      <section class="pdf-section">
+      <section class="pdf-section weather-section">
         <h3 class="table-title">Weather System</h3>
 
         <div class="bulletin-text" contenteditable="true">
-          Add cloud-related weather system notes here...
+Add cloud-related weather system notes here...
         </div>
       </section>
 
     </div>
 
-    <button onclick="downloadPDF()">Download PDF</button>
+    <button id="download-btn" onclick="downloadPDF()">Download PDF</button>
   </div>
 
   <script src="cloud-data.js"></script>
