@@ -21,7 +21,6 @@
       <section class="pdf-section">
         <h1 class="center-title">3-Hourly Cloud Forecast Bulletin</h1>
 
-        <h2 id="forecast-date" class="center-date"></h2>
         <h3 id="issue-time" class="issue-time"></h3>
 
         <h3 class="table-title">Cloud Coverage Classification</h3>
@@ -37,35 +36,35 @@
           </thead>
 
           <tbody>
-            <tr class="cloud-clear">
+            <tr class="cloud-clear-row">
               <td>1</td>
               <td>Clear Sky</td>
               <td>0% - 10%</td>
               <td>Mostly clear sky with very low cloud presence.</td>
             </tr>
 
-            <tr class="cloud-low">
+            <tr class="cloud-low-row">
               <td>2</td>
               <td>Low Cloud Coverage</td>
               <td>11% - 30%</td>
               <td>Few clouds with minor impact on solar radiation.</td>
             </tr>
 
-            <tr class="cloud-medium">
+            <tr class="cloud-medium-row">
               <td>3</td>
               <td>Medium Cloud Coverage</td>
               <td>31% - 60%</td>
               <td>Partly cloudy conditions with moderate impact on GHI.</td>
             </tr>
 
-            <tr class="cloud-high">
+            <tr class="cloud-high-row">
               <td>4</td>
               <td>High Cloud Coverage</td>
               <td>61% - 85%</td>
               <td>Mostly cloudy conditions with significant GHI reduction.</td>
             </tr>
 
-            <tr class="cloud-overcast">
+            <tr class="cloud-overcast-row">
               <td>5</td>
               <td>Overcast</td>
               <td>86% - 100%</td>
@@ -74,21 +73,16 @@
           </tbody>
         </table>
 
-        <h3 class="table-title">3-Hourly Cloud Forecast</h3>
+        <h3 class="table-title">Cloud Forecast</h3>
 
         <table class="forecast-table">
           <thead>
             <tr>
               <th>State</th>
               <th>Geographical Area</th>
-              <th>00:00</th>
-              <th>03:00</th>
-              <th>06:00</th>
-              <th>09:00</th>
-              <th>12:00</th>
-              <th>15:00</th>
-              <th>18:00</th>
-              <th>21:00</th>
+              <th><input type="text" value="4h" class="day-header-input"></th>
+              <th><input type="text" value="Day 2" class="day-header-input"></th>
+              <th><input type="text" value="Day 3" class="day-header-input"></th>
             </tr>
           </thead>
 
@@ -98,58 +92,26 @@
 
       <!-- PAGE 2: MAPS -->
       <section class="pdf-section maps-section">
-
-        <h3 class="map-label">Cloud Forecast Map - 00:00 IST</h3>
+        <h3 class="map-label">Cloud Forecast Map - 1</h3>
         <div class="map-wrapper">
-          <svg id="cloudMap00"></svg>
-          <div class="map-legend" id="legend00"></div>
+          <svg id="cloudMapDay1"></svg>
+          <div class="map-legend" id="legendDay1"></div>
         </div>
 
-        <h3 class="map-label">Cloud Forecast Map - 03:00 IST</h3>
+        <h3 class="map-label">Cloud Forecast Map - 2</h3>
         <div class="map-wrapper">
-          <svg id="cloudMap03"></svg>
-          <div class="map-legend" id="legend03"></div>
+          <svg id="cloudMapDay2"></svg>
+          <div class="map-legend" id="legendDay2"></div>
         </div>
 
-        <h3 class="map-label">Cloud Forecast Map - 06:00 IST</h3>
+        <h3 class="map-label">Cloud Forecast Map - 3</h3>
         <div class="map-wrapper">
-          <svg id="cloudMap06"></svg>
-          <div class="map-legend" id="legend06"></div>
+          <svg id="cloudMapDay3"></svg>
+          <div class="map-legend" id="legendDay3"></div>
         </div>
-
-        <h3 class="map-label">Cloud Forecast Map - 09:00 IST</h3>
-        <div class="map-wrapper">
-          <svg id="cloudMap09"></svg>
-          <div class="map-legend" id="legend09"></div>
-        </div>
-
-        <h3 class="map-label">Cloud Forecast Map - 12:00 IST</h3>
-        <div class="map-wrapper">
-          <svg id="cloudMap12"></svg>
-          <div class="map-legend" id="legend12"></div>
-        </div>
-
-        <h3 class="map-label">Cloud Forecast Map - 15:00 IST</h3>
-        <div class="map-wrapper">
-          <svg id="cloudMap15"></svg>
-          <div class="map-legend" id="legend15"></div>
-        </div>
-
-        <h3 class="map-label">Cloud Forecast Map - 18:00 IST</h3>
-        <div class="map-wrapper">
-          <svg id="cloudMap18"></svg>
-          <div class="map-legend" id="legend18"></div>
-        </div>
-
-        <h3 class="map-label">Cloud Forecast Map - 21:00 IST</h3>
-        <div class="map-wrapper">
-          <svg id="cloudMap21"></svg>
-          <div class="map-legend" id="legend21"></div>
-        </div>
-
       </section>
 
-      <!-- PAGE 3 -->
+      <!-- PAGE 3: WEATHER SYSTEM -->
       <section class="pdf-section">
         <h3 class="table-title">Weather System</h3>
 
