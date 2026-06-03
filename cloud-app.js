@@ -252,7 +252,7 @@ async function drawCloudMap(svgId, dayNumber) {
   svg.selectAll("*").remove();
 
   const width = 860;
-  const height = 430;
+  const height = 500;
   const patternId = `noForecastPatternCloudDay${dayNumber}`;
 
   svg
