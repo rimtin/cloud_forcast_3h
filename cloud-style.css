@@ -434,6 +434,25 @@ body {
     break-before: page;
   }
 
+  .legend-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #555;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.no-forecast-box {
+  background-image: repeating-linear-gradient(
+    45deg,
+    #ffffff 0,
+    #ffffff 4px,
+    #999999 4px,
+    #999999 6px
+  );
+}
+
   .map-wrapper {
     height: 360px;
     page-break-inside: avoid;
