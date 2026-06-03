@@ -273,6 +273,14 @@ body {
   cursor: pointer;
 }
 
+.issue-clock {
+  font-size: 19px;
+  font-weight: 800;
+  margin: -8px 0 16px 0;
+  text-align: left;
+  color: #8b0015;
+}
+
 #download-btn:hover {
   background: #444444;
 }
