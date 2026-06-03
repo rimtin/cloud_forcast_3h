@@ -1,440 +1,374 @@
-document.addEventListener("DOMContentLoaded", () => {
-  setAutomaticIssueDate();
-  buildForecastTable();
-  loadAllMaps();
-});
+const CLOUD_GEO_URLS = [
+  "indian_met_zones.geojson",
+  "./indian_met_zones.geojson",
+  "assets/indian_met_zones.geojson",
+  "./assets/indian_met_zones.geojson",
+  "https://rimtin.github.io/cloud_forcast_3h/indian_met_zones.geojson",
+  "https://raw.githubusercontent.com/rimtin/cloud_forcast_3h/main/indian_met_zones.geojson",
+  "https://cdn.jsdelivr.net/gh/rimtin/cloud_forcast_3h@main/indian_met_zones.geojson",
 
-function setAutomaticIssueDate() {
-  const dateElement = document.getElementById("issue-date");
-  const timeElement = document.getElementById("issue-clock");
+  /* Wind repo fallback because your wind map file is working */
+  "https://rimtin.github.io/wind_bulletin/indian_met_zones.geojson",
+  "https://raw.githubusercontent.com/rimtin/wind_bulletin/main/indian_met_zones.geojson",
+  "https://cdn.jsdelivr.net/gh/rimtin/wind_bulletin@main/indian_met_zones.geojson"
+];
 
-  const now = new Date();
+let cachedCloudGeoJSON = null;
 
-  const issueDate = new Intl.DateTimeFormat("en-CA", {
+async function loadCloudGeoJSON() {
+  if (cachedCloudGeoJSON) return cachedCloudGeoJSON;
+
+  for (const url of CLOUD_GEO_URLS) {
+    try {
+      console.log("Trying Cloud GeoJSON:", url);
+
+      const data = await d3.json(url);
+
+      if (data && data.features && data.features.length > 0) {
+        console.log("Cloud GeoJSON loaded from:", url);
+        console.log("First feature properties:", data.features[0].properties);
+
+        cachedCloudGeoJSON = data;
+        return data;
+      }
+    } catch (error) {
+      console.warn("Cloud GeoJSON failed:", url, error);
+    }
+  }
+
+  throw new Error("No Cloud GeoJSON source could be loaded.");
+}
+
+function updateForecastDate() {
+  const dateEl = document.getElementById("issue-date");
+  if (!dateEl) return;
+
+  const today = new Date();
+
+  const formattedDate = today.toLocaleDateString("en-CA", {
     timeZone: "Asia/Kolkata",
     year: "numeric",
     month: "2-digit",
     day: "2-digit"
-  }).format(now);
+  });
 
-  const issueTime = new Intl.DateTimeFormat("en-IN", {
+  dateEl.textContent = `Forecast Issued: ${formattedDate}`;
+}
+
+function updateIssueTime() {
+  const issueEl = document.getElementById("issue-clock");
+  if (!issueEl) return;
+
+  const time = new Date().toLocaleTimeString("en-IN", {
     timeZone: "Asia/Kolkata",
     hour: "2-digit",
     minute: "2-digit",
     hour12: true
-  }).format(now);
-
-  if (dateElement) {
-    dateElement.textContent = `Forecast Issued: ${issueDate}`;
-  }
-
-  if (timeElement) {
-    timeElement.textContent = `Time: ${issueTime} IST`;
-  }
-}
-
-function buildForecastTable() {
-  const tableBody = document.getElementById("cloud-table-body");
-  if (!tableBody) return;
-
-  tableBody.innerHTML = "";
-
-  forecastData.forEach((stateBlock) => {
-    stateBlock.areas.forEach((area, index) => {
-      const row = document.createElement("tr");
-
-      if (index === 0) {
-        const stateCell = document.createElement("td");
-        stateCell.textContent = stateBlock.state;
-        stateCell.rowSpan = stateBlock.areas.length;
-        stateCell.className = "state-cell";
-        row.appendChild(stateCell);
-      }
-
-      const areaCell = document.createElement("td");
-      areaCell.textContent = area.area;
-      areaCell.className = "area-cell";
-      row.appendChild(areaCell);
-
-      row.appendChild(createForecastCell(area, stateBlock, "day1"));
-      row.appendChild(createForecastCell(area, stateBlock, "day2"));
-      row.appendChild(createForecastCell(area, stateBlock, "day3"));
-
-      tableBody.appendChild(row);
-    });
-  });
-}
-
-function createForecastCell(area, stateBlock, dayKey) {
-  const cell = document.createElement("td");
-
-  const select = createForecastSelect(area[dayKey]);
-  select.dataset.state = stateBlock.fullState;
-  select.dataset.area = area.mapName;
-  select.dataset.day = dayKey;
-
-  cell.appendChild(select);
-  return cell;
-}
-
-function createForecastSelect(selectedValue) {
-  const select = document.createElement("select");
-  select.className = "forecast-select";
-
-  CLOUD_CATEGORIES.forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category;
-    option.textContent = category;
-
-    if (category === selectedValue) {
-      option.selected = true;
-    }
-
-    select.appendChild(option);
   });
 
-  applySelectStyle(select);
-
-  select.addEventListener("change", () => {
-    applySelectStyle(select);
-    updateAllMaps();
-  });
-
-  return select;
+  issueEl.textContent = `Time of Issue: ${time} IST`;
 }
 
-function applySelectStyle(select) {
-  const value = select.value;
-  select.style.backgroundColor = CLOUD_COLORS[value] || "#ffffff";
-  select.style.color = CLOUD_TEXT_COLORS[value] || "#000000";
+function createCloudDropdown(selectedValue = "Clear Sky") {
+  return `
+    <select onchange="updateCloudMapColors(); applyCloudDropdownColor(this)">
+      ${CLOUD_CATEGORIES.map(option => `
+        <option value="${option}" ${option === selectedValue ? "selected" : ""}>
+          ${option}
+        </option>
+      `).join("")}
+    </select>
+  `;
 }
 
-async function loadAllMaps() {
-  try {
-    const geoData = await loadGeoJson();
-    window.cloudGeoData = geoData;
+function buildCloudTable() {
+  const tbody = document.getElementById("cloud-table-body");
+  if (!tbody) return;
 
-    setTimeout(() => {
-      updateAllMaps();
-    }, 500);
-  } catch (error) {
-    console.error("Map loading failed:", error);
-  }
-}
+  tbody.innerHTML = "";
 
-async function loadGeoJson() {
-  for (const url of GEO_URLS) {
-    try {
-      const response = await fetch(url, {
-        cache: "no-store"
-      });
+  forecastData.forEach(item => {
+    item.areas.forEach((area, index) => {
+      const tr = document.createElement("tr");
 
-      if (response.ok) {
-        console.log("GeoJSON loaded from:", url);
-        return await response.json();
-      }
+      tr.setAttribute("data-area", area.area);
+      tr.setAttribute("data-map-name", area.mapName || area.area);
 
-      console.warn("GeoJSON failed:", url, response.status);
-    } catch (error) {
-      console.warn("Could not load GeoJSON from:", url, error);
-    }
-  }
+      const stateCell = index === 0
+        ? `<td rowspan="${item.areas.length}" class="state-cell">${item.state}</td>`
+        : "";
 
-  throw new Error("No GeoJSON file found. Check indian_met_zones.geojson path.");
-}
+      tr.innerHTML = `
+        ${stateCell}
+        <td class="area-cell">${area.area}</td>
+        <td>${createCloudDropdown(area.day1)}</td>
+        <td>${createCloudDropdown(area.day2)}</td>
+        <td>${createCloudDropdown(area.day3)}</td>
+      `;
 
-function updateAllMaps() {
-  if (!window.cloudGeoData) return;
-
-  drawMap("cloudMapDay1", "legendDay1", window.cloudGeoData, "day1");
-  drawMap("cloudMapDay2", "legendDay2", window.cloudGeoData, "day2");
-  drawMap("cloudMapDay3", "legendDay3", window.cloudGeoData, "day3");
-}
-
-function getForecastEntries(dayKey) {
-  const entries = [];
-  const selects = document.querySelectorAll(`.forecast-select[data-day="${dayKey}"]`);
-
-  selects.forEach((select) => {
-    const mainName = normalizeName(select.dataset.area);
-    const names = [mainName];
-
-    const aliases = MAP_NAME_ALIASES[mainName];
-
-    if (aliases && Array.isArray(aliases)) {
-      aliases.forEach((alias) => {
-        names.push(normalizeName(alias));
-      });
-    }
-
-    entries.push({
-      names: [...new Set(names)],
-      category: select.value
+      tbody.appendChild(tr);
     });
   });
 
-  return entries;
+  document.querySelectorAll("#cloud-table-body select")
+    .forEach(select => applyCloudDropdownColor(select));
 }
 
-function getCategoryForFeature(featureName, entries) {
-  const normalizedFeature = normalizeName(featureName);
+function applyCloudDropdownColor(select) {
+  const color = CLOUD_COLORS[select.value] || "#ffffff";
 
-  for (const entry of entries) {
-    if (entry.names.includes(normalizedFeature)) {
-      return entry.category;
+  select.style.backgroundColor = color;
+  select.style.fontWeight = "700";
+
+  if (
+    select.value === "Low Cloud Coverage" ||
+    select.value === "Overcast"
+  ) {
+    select.style.color = "#ffffff";
+  } else {
+    select.style.color = "#000000";
+  }
+}
+
+/* This follows your working wind-app mapping style */
+const cloudGeoNameMap = {
+  "Punjab": "Punjab",
+
+  "West Rajasthan": "West Rajasthan",
+  "East Rajasthan": "East Rajasthan",
+
+  "Saurashtra & Kutch": "Saurashtra & Kachh",
+  "Saurashtra & Kachh": "Saurashtra & Kachh",
+  "Gujarat Region": "Gujarat region",
+
+  "West Uttar Pradesh": "West Uttar Pradesh",
+  "East Uttar Pradesh": "East Uttar Pradesh",
+
+  "West Madhya Pradesh": "West Madhya Pradesh",
+  "East Madhya Pradesh": "East Madhya Pradesh",
+
+  "Chhattisgarh": "Chhattisgarh",
+
+  "Madhya Maharashtra": "Madhya Maharashtra",
+  "Marathwada": "Marathwada",
+  "Vidarbha": "Vidarbha",
+
+  "Telangana": "Telangana",
+
+  "Andhra Pradesh": "Coastal Andhra Pradesh",
+  "Coastal Andhra Pradesh": "Coastal Andhra Pradesh",
+  "Rayalaseema": "Rayalaseema",
+
+  "North Interior Karnataka": "N.I. Karnataka",
+  "South Interior Karnataka": "S.I. Karnataka",
+  "N.I. Karnataka": "N.I. Karnataka",
+  "S.I. Karnataka": "S.I. Karnataka",
+
+  "Tamil Nadu": "Tamil Nadu & Puducherry",
+  "Tamil Nadu & Puducherry": "Tamil Nadu & Puducherry"
+};
+
+function normalizeName(name) {
+  return String(name || "")
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/\./g, "")
+    .replace(/kachh/g, "kutch")
+    .replace(/kachchh/g, "kutch")
+    .replace(/gujarat region/g, "gujarat region")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getGeoNameFromFeature(d) {
+  return (
+    d.properties?.ST_NM ||
+    d.properties?.st_nm ||
+    d.properties?.ST_NAME ||
+    d.properties?.SUBDIVISION ||
+    d.properties?.subdivision ||
+    d.properties?.SUBDIV_NAME ||
+    d.properties?.subdiv_name ||
+    d.properties?.SUB_DIVISION ||
+    d.properties?.SUBDIV ||
+    d.properties?.NAME ||
+    d.properties?.name ||
+    d.properties?.Name ||
+    ""
+  );
+}
+
+function getSubdivisionColor(geoName, dayNumber) {
+  const rows = document.querySelectorAll("#cloud-table-body tr");
+  const target = normalizeName(geoName);
+
+  for (const row of rows) {
+    const area = row.getAttribute("data-area");
+    const mapName = row.getAttribute("data-map-name");
+
+    const mappedGeoName =
+      cloudGeoNameMap[mapName] ||
+      cloudGeoNameMap[area] ||
+      mapName ||
+      area;
+
+    if (normalizeName(mappedGeoName) === target) {
+      const select = row.querySelectorAll("select")[dayNumber - 1];
+      const selected = select?.value;
+
+      return CLOUD_COLORS[selected] || null;
     }
   }
 
   return null;
 }
 
-function drawMap(svgId, legendId, geoData, dayKey) {
-  const svgElement = document.getElementById(svgId);
-  if (!svgElement) return;
-
-  const wrapper = svgElement.closest(".map-wrapper");
-
-  const width = wrapper.clientWidth || 900;
-  const height = wrapper.clientHeight || 405;
-
-  const svg = d3.select(`#${svgId}`);
-  svg.selectAll("*").remove();
-
-  svg
-    .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet");
-
-  const features = getGeoFeatures(geoData);
-
-  if (!features || features.length === 0) {
-    console.error("No map features found in GeoJSON.");
-    return;
-  }
-
-  console.log("Map features found:", features.length);
-  console.log("Sample properties:", features[0].properties);
-
-  const projection = d3.geoMercator().fitExtent(
-    [
-      [30, 20],
-      [width - 180, height - 20]
-    ],
-    {
-      type: "FeatureCollection",
-      features: features
-    }
-  );
-
-  const path = d3.geoPath().projection(projection);
-  const entries = getForecastEntries(dayKey);
-
-  createHatchPattern(svg, svgId);
-
-  svg
-    .append("g")
-    .selectAll("path")
-    .data(features)
-    .enter()
-    .append("path")
-    .attr("d", path)
-    .attr("fill", (d) => {
-      const featureName = getFeatureName(d);
-      const category = getCategoryForFeature(featureName, entries);
-
-      if (!category) {
-        return `url(#hatch-${svgId})`;
-      }
-
-      return CLOUD_COLORS[category] || "#ffffff";
-    })
-    .attr("stroke", "#555555")
-    .attr("stroke-width", 0.65);
-
-  createLegend(legendId);
-}
-
-function createHatchPattern(svg, svgId) {
+function addNoForecastPattern(svg, patternId) {
   const defs = svg.append("defs");
 
-  const pattern = defs
-    .append("pattern")
-    .attr("id", `hatch-${svgId}`)
+  const pattern = defs.append("pattern")
+    .attr("id", patternId)
     .attr("patternUnits", "userSpaceOnUse")
-    .attr("width", 8)
-    .attr("height", 8)
-    .attr("patternTransform", "rotate(-45)");
+    .attr("width", 10)
+    .attr("height", 10)
+    .attr("patternTransform", "rotate(45)");
 
-  pattern
-    .append("rect")
-    .attr("width", 8)
-    .attr("height", 8)
+  pattern.append("rect")
+    .attr("width", 10)
+    .attr("height", 10)
     .attr("fill", "#ffffff");
 
-  pattern
-    .append("line")
+  pattern.append("line")
     .attr("x1", 0)
     .attr("y1", 0)
     .attr("x2", 0)
-    .attr("y2", 8)
-    .attr("stroke", "#b8b8b8")
-    .attr("stroke-width", 2);
+    .attr("y2", 10)
+    .attr("stroke", "#777")
+    .attr("stroke-width", 1.4);
 }
 
-function getGeoFeatures(geoData) {
-  if (geoData.type === "FeatureCollection") {
-    return geoData.features;
+async function drawCloudMap(svgId, dayNumber) {
+  const svg = d3.select(svgId);
+  svg.selectAll("*").remove();
+
+  const width = 860;
+  const height = 520;
+  const patternId = `noForecastPatternCloudDay${dayNumber}`;
+
+  svg
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet");
+
+  addNoForecastPattern(svg, patternId);
+
+  try {
+    const data = await loadCloudGeoJSON();
+
+    const projection = d3.geoIdentity()
+      .reflectY(true)
+      .fitExtent([[25, 25], [width - 25, height - 25]], data);
+
+    const path = d3.geoPath().projection(projection);
+
+    svg.selectAll("path")
+      .data(data.features)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .attr("fill", `url(#${patternId})`)
+      .attr("stroke", "#333")
+      .attr("stroke-width", 0.6)
+      .attr("data-geo-name", d => getGeoNameFromFeature(d));
+
+    updateCloudMapColors();
+
+  } catch (error) {
+    console.error("Final cloud map loading error:", error);
+
+    svg.append("text")
+      .attr("x", 20)
+      .attr("y", 40)
+      .attr("fill", "red")
+      .attr("font-size", 14)
+      .text("Map could not load. Check GeoJSON file path.");
   }
-
-  if (geoData.type === "Topology") {
-    const objectKeys = Object.keys(geoData.objects);
-
-    let bestKey = objectKeys[0];
-    let maxCount = 0;
-
-    objectKeys.forEach((key) => {
-      const obj = geoData.objects[key];
-
-      if (obj && obj.geometries && obj.geometries.length > maxCount) {
-        maxCount = obj.geometries.length;
-        bestKey = key;
-      }
-    });
-
-    console.log("Using TopoJSON object:", bestKey);
-
-    return topojson.feature(geoData, geoData.objects[bestKey]).features;
-  }
-
-  return [];
 }
 
-function getFeatureName(feature) {
-  const props = feature.properties || {};
-
-  return (
-    props.SUBDIVISION ||
-    props.SUB_DIVISION ||
-    props.Sub_Division ||
-    props.subdivision ||
-    props.SUBDIV ||
-    props.SUBDIVISION_NAME ||
-    props.MET_SUBDIV ||
-    props.MET_SUB_DIV ||
-    props.DISTRICT ||
-    props.District ||
-    props.district ||
-    props.NAME ||
-    props.Name ||
-    props.name ||
-    props.NAME_1 ||
-    props.ST_NM ||
-    props.STATE ||
-    props.state ||
-    props.ST_NAME ||
-    ""
-  );
+function updateCloudMapColors() {
+  updateSingleCloudMap("#cloudMapDay1", 1);
+  updateSingleCloudMap("#cloudMapDay2", 2);
+  updateSingleCloudMap("#cloudMapDay3", 3);
 }
 
-function normalizeName(name) {
-  return String(name || "")
-    .toLowerCase()
-    .replace(/&/g, "and")
-    .replace(/,/g, "")
-    .replace(/\./g, "")
-    .replace(/-/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function createLegend(legendId) {
-  const legend = document.getElementById(legendId);
-  if (!legend) return;
-
-  legend.innerHTML = "";
-
-  CLOUD_CATEGORIES.forEach((category) => {
-    const item = document.createElement("div");
-    item.className = "legend-item";
-
-    const colorBox = document.createElement("span");
-    colorBox.className = "legend-color";
-    colorBox.style.backgroundColor = CLOUD_COLORS[category];
-
-    const label = document.createElement("span");
-    label.textContent = category;
-
-    item.appendChild(colorBox);
-    item.appendChild(label);
-    legend.appendChild(item);
+function updateSingleCloudMap(svgId, dayNumber) {
+  d3.selectAll(`${svgId} path`).attr("fill", function(d) {
+    const color = getSubdivisionColor(getGeoNameFromFeature(d), dayNumber);
+    return color || `url(#noForecastPatternCloudDay${dayNumber})`;
   });
+}
 
-  const unusedItem = document.createElement("div");
-  unusedItem.className = "legend-item";
+function buildLegend() {
+  const legendHTML = `
+    ${CLOUD_CATEGORIES.map(option => `
+      <div class="legend-item">
+        <span class="legend-box" style="background:${CLOUD_COLORS[option]}"></span>
+        ${option}
+      </div>
+    `).join("")}
+    <div class="legend-item">
+      <span class="legend-box no-forecast-box"></span>
+      No Forecast / Not Used
+    </div>
+  `;
 
-  const hatchBox = document.createElement("span");
-  hatchBox.className = "legend-hatch";
-
-  const hatchLabel = document.createElement("span");
-  hatchLabel.textContent = "No Forecast / Not Used";
-
-  unusedItem.appendChild(hatchBox);
-  unusedItem.appendChild(hatchLabel);
-  legend.appendChild(unusedItem);
+  ["legendDay1", "legendDay2", "legendDay3"].forEach(id => {
+    const legend = document.getElementById(id);
+    if (legend) legend.innerHTML = legendHTML;
+  });
 }
 
 function downloadPDF() {
+  updateIssueTime();
+
   const element = document.getElementById("pdf-area");
-  const button = document.getElementById("download-btn");
 
-  if (button) {
-    button.style.display = "none";
-  }
+  const opt = {
+    margin: [0.12, 0.12, 0.12, 0.12],
+    filename: "Cloud_Forecast_Bulletin.pdf",
+    image: {
+      type: "jpeg",
+      quality: 0.7
+    },
+    html2canvas: {
+      scale: 1.05,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff",
+      logging: false,
+      scrollY: 0
+    },
+    jsPDF: {
+      unit: "in",
+      format: "a4",
+      orientation: "portrait",
+      compress: true
+    },
+    pagebreak: {
+      mode: ["css", "legacy"],
+      avoid: ["table", ".map-wrapper"]
+    }
+  };
 
-  window.scrollTo(0, 0);
-
-  setTimeout(() => {
-    const options = {
-      margin: [0.1, 0.1, 0.1, 0.1],
-      filename: "Cloud_Forecast_Bulletin.pdf",
-
-      image: {
-        type: "jpeg",
-        quality: 0.96
-      },
-
-      html2canvas: {
-        scale: 1.8,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 794,
-        windowHeight: element.scrollHeight
-      },
-
-      jsPDF: {
-        unit: "px",
-        format: [794, 1123],
-        orientation: "portrait"
-      },
-
-      pagebreak: {
-        mode: ["css", "legacy"],
-        before: [".maps-section", ".weather-section"],
-        avoid: ["table", "tr"]
-      }
-    };
-
-    html2pdf()
-      .set(options)
-      .from(element)
-      .save()
-      .then(() => {
-        if (button) {
-          button.style.display = "block";
-        }
-      });
-  }, 600);
+  html2pdf().set(opt).from(element).save();
 }
+
+window.onload = function() {
+  updateForecastDate();
+  updateIssueTime();
+  buildCloudTable();
+  buildLegend();
+
+  drawCloudMap("#cloudMapDay1", 1);
+  drawCloudMap("#cloudMapDay2", 2);
+  drawCloudMap("#cloudMapDay3", 3);
+};
