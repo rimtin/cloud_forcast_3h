@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function setAutomaticIssueDate() {
-  const issueElement = document.getElementById("issue-time");
+  const dateElement = document.getElementById("issue-date");
+  const timeElement = document.getElementById("issue-clock");
 
   const now = new Date();
 
@@ -16,8 +17,19 @@ function setAutomaticIssueDate() {
     day: "2-digit"
   }).format(now);
 
-  if (issueElement) {
-    issueElement.textContent = `Forecast Issued: ${issueDate}`;
+  const issueTime = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  }).format(now);
+
+  if (dateElement) {
+    dateElement.textContent = `Forecast Issued: ${issueDate}`;
+  }
+
+  if (timeElement) {
+    timeElement.textContent = `Time: ${issueTime} IST`;
   }
 }
 
