@@ -2,6 +2,7 @@
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
   padding: 0;
@@ -12,40 +13,50 @@ body {
 
 .container {
   width: 100%;
-  max-width: 1100px;
+  max-width: 980px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 16px;
+  background: #ffffff;
 }
 
 #pdf-area {
+  width: 100%;
   background: #ffffff;
-  padding: 5px;
+  padding: 0;
+  margin: 0;
 }
 
 .pdf-section {
   width: 100%;
   background: #ffffff;
-  margin-bottom: 22px;
+  margin: 0 0 18px 0;
+  padding: 0;
+}
+
+.first-section {
+  page-break-before: auto;
 }
 
 .center-title {
   text-align: center;
-  font-size: 30px;
+  font-size: 27px;
   font-weight: 800;
-  margin: 5px 0 18px 0;
+  margin: 4px 0 14px 0;
+  line-height: 1.2;
 }
 
 .issue-time {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
-  margin: 5px 0 18px 0;
+  margin: 4px 0 14px 0;
   text-align: left;
 }
 
 .table-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
-  margin: 18px 0 10px 0;
+  margin: 16px 0 8px 0;
+  line-height: 1.2;
 }
 
 .cloud-info-table,
@@ -53,7 +64,7 @@ body {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  margin-bottom: 20px;
+  margin: 0 0 16px 0;
 }
 
 .cloud-info-table th,
@@ -61,11 +72,12 @@ body {
 .forecast-table th,
 .forecast-table td {
   border: 2px solid #222222;
-  padding: 7px;
+  padding: 6px;
   text-align: center;
   vertical-align: middle;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
+  line-height: 1.15;
 }
 
 .cloud-info-table th,
@@ -128,24 +140,28 @@ body {
 
 .day-header-input {
   width: 100%;
-  height: 26px;
-  border: 1px solid #777777;
+  height: 25px;
+  border: 1px solid #888888;
   padding: 3px 6px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
+  background: #ffffff;
 }
 
 .forecast-select {
   width: 100%;
-  min-height: 30px;
+  min-height: 28px;
   border: 1px solid #ffffff;
-  padding: 5px 8px;
-  font-size: 13px;
+  padding: 4px 6px;
+  font-size: 12px;
   font-weight: 800;
   text-align: center;
   text-align-last: center;
   outline: none;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .state-cell {
@@ -160,23 +176,26 @@ body {
 
 .maps-section {
   page-break-before: always;
+  break-before: page;
 }
 
 .map-label {
   text-align: center;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
-  margin: 16px 0 8px 0;
+  margin: 12px 0 6px 0;
+  line-height: 1.2;
 }
 
 .map-wrapper {
   width: 100%;
-  height: 460px;
+  height: 405px;
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
   position: relative;
-  margin-bottom: 12px;
+  margin: 0 0 12px 0;
   background: #ffffff;
+  overflow: hidden;
 }
 
 .map-wrapper svg {
@@ -187,37 +206,36 @@ body {
 
 .map-legend {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: 14px;
+  right: 14px;
   background: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 4px;
-  padding: 8px 10px;
-  font-size: 12px;
+  padding: 7px 9px;
+  font-size: 11px;
   font-weight: 600;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  z-index: 5;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   white-space: nowrap;
 }
 
-.legend-color {
-  width: 14px;
-  height: 14px;
+.legend-color,
+.legend-hatch {
+  width: 13px;
+  height: 13px;
   border: 1px solid #555555;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .legend-hatch {
-  width: 14px;
-  height: 14px;
-  border: 1px solid #555555;
-  display: inline-block;
   background-image: repeating-linear-gradient(
     -45deg,
     #ffffff 0px,
@@ -227,17 +245,22 @@ body {
   );
 }
 
+.weather-section {
+  page-break-before: always;
+  break-before: page;
+}
+
 .bulletin-text {
-  min-height: 260px;
+  min-height: 220px;
   border: 1px solid #d0d0d0;
-  padding: 15px;
-  font-size: 18px;
-  line-height: 1.7;
+  padding: 12px;
+  font-size: 17px;
+  line-height: 1.6;
   outline: none;
   white-space: pre-wrap;
 }
 
-button {
+#download-btn {
   display: block;
   margin: 20px auto;
   padding: 12px 30px;
@@ -250,33 +273,48 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+#download-btn:hover {
   background: #444444;
 }
 
 @media print {
+  html,
   body {
+    width: 210mm;
+    margin: 0;
+    padding: 0;
     background: #ffffff;
   }
 
   .container {
+    width: 210mm;
     max-width: none;
-    padding: 0;
+    padding: 8mm;
+    margin: 0;
   }
 
   #pdf-area {
+    width: 100%;
+    margin: 0;
     padding: 0;
   }
 
-  button {
+  #download-btn {
     display: none;
   }
 
   .pdf-section {
     page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   .maps-section {
     page-break-before: always;
+    break-before: page;
+  }
+
+  .weather-section {
+    page-break-before: always;
+    break-before: page;
   }
 }
