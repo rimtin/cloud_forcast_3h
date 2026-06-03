@@ -251,8 +251,8 @@ async function drawCloudMap(svgId, dayNumber) {
   const svg = d3.select(svgId);
   svg.selectAll("*").remove();
 
-  const width = 660;
-  const height = 300;
+  const width = 860;
+  const height = 560;
   const patternId = `noForecastPatternCloudDay${dayNumber}`;
 
   svg
@@ -266,7 +266,13 @@ async function drawCloudMap(svgId, dayNumber) {
 
     const projection = d3.geoIdentity()
       .reflectY(true)
-      .fitExtent([[70, 20], [width - 150, height - 25]], data);
+      .fitExtent(
+        [
+          [45, 25],
+          [width - 160, height - 55]
+        ],
+        data
+      );
 
     const path = d3.geoPath().projection(projection);
 
