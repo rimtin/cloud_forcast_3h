@@ -1,7 +1,7 @@
 const GEO_URLS = [
   "indian_met_zones.geojson",
   "./indian_met_zones.geojson",
-  "assets/indian_met_zones.geojson"
+  "https://rimtin.github.io/cloud_forcast_3h/indian_met_zones.geojson"
 ];
 
 const CLOUD_CATEGORIES = [
@@ -72,7 +72,7 @@ const forecastData = [
     areas: [
       {
         area: "Saurashtra & Kutch",
-        mapName: "Saurashtra & Kachchh",
+        mapName: "Saurashtra & Kutch",
         day1: "Clear Sky",
         day2: "Clear Sky",
         day3: "Clear Sky"
@@ -191,7 +191,7 @@ const forecastData = [
     areas: [
       {
         area: "Andhra Pradesh",
-        mapName: "Coastal Andhra Pradesh",
+        mapName: "Andhra Pradesh",
         day1: "Clear Sky",
         day2: "Clear Sky",
         day3: "Clear Sky"
@@ -233,7 +233,7 @@ const forecastData = [
     areas: [
       {
         area: "Tamil Nadu",
-        mapName: "Tamil Nadu, Puducherry & Karaikal",
+        mapName: "Tamil Nadu",
         day1: "Clear Sky",
         day2: "Clear Sky",
         day3: "Clear Sky"
@@ -241,3 +241,39 @@ const forecastData = [
     ]
   }
 ];
+
+const MAP_NAME_ALIASES = {
+  "saurashtra and kutch": [
+    "saurashtra and kutch",
+    "saurashtra and kachchh",
+    "saurashtra kachchh",
+    "saurashtra & kutch",
+    "saurashtra & kachchh"
+  ],
+
+  "andhra pradesh": [
+    "andhra pradesh",
+    "coastal andhra pradesh"
+  ],
+
+  "tamil nadu": [
+    "tamil nadu",
+    "tamil nadu puducherry and karaikal",
+    "tamil nadu puducherry",
+    "tamil nadu & puducherry"
+  ],
+
+  "north interior karnataka": [
+    "north interior karnataka",
+    "n.i. karnataka",
+    "n i karnataka",
+    "north karnataka"
+  ],
+
+  "south interior karnataka": [
+    "south interior karnataka",
+    "s.i. karnataka",
+    "s i karnataka",
+    "south karnataka"
+  ]
+};
