@@ -1,0 +1,210 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  color: #000;
+}
+
+.container {
+  width: 100%;
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+#pdf-area {
+  background: #ffffff;
+  padding: 20px;
+}
+
+.pdf-section {
+  width: 100%;
+  background: #ffffff;
+  margin-bottom: 25px;
+}
+
+.center-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  margin: 5px 0 15px 0;
+}
+
+.center-date {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 5px 0 10px 0;
+}
+
+.issue-time {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 10px 0 18px 0;
+  text-align: left;
+}
+
+.table-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 18px 0 10px 0;
+}
+
+.cloud-info-table,
+.forecast-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-bottom: 18px;
+}
+
+.cloud-info-table th,
+.cloud-info-table td,
+.forecast-table th,
+.forecast-table td {
+  border: 2px solid #222;
+  padding: 8px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.cloud-info-table th,
+.forecast-table th {
+  background: #cdeeff;
+  font-weight: 800;
+}
+
+.cloud-info-table th:nth-child(1) {
+  width: 8%;
+}
+
+.cloud-info-table th:nth-child(2) {
+  width: 25%;
+}
+
+.cloud-info-table th:nth-child(3) {
+  width: 20%;
+}
+
+.cloud-info-table th:nth-child(4) {
+  width: 47%;
+}
+
+.forecast-table th:nth-child(1) {
+  width: 8%;
+}
+
+.forecast-table th:nth-child(2) {
+  width: 20%;
+}
+
+.forecast-table th:nth-child(3) {
+  width: 32%;
+}
+
+.forecast-table th:nth-child(4) {
+  width: 40%;
+}
+
+.state-cell {
+  font-weight: 700;
+  background: #ffffff;
+}
+
+.cloud-select {
+  width: 100%;
+  min-height: 30px;
+  border: 2px solid #222;
+  border-radius: 15px;
+  padding: 5px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  text-align-last: center;
+  cursor: pointer;
+  outline: none;
+}
+
+.cloud-select option {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 600;
+}
+
+.cloud-clear {
+  background: #66ccff;
+}
+
+.cloud-low {
+  background: #028a0f;
+  color: #ffffff;
+}
+
+.cloud-medium {
+  background: #fff500;
+}
+
+.cloud-high {
+  background: #ff8a00;
+}
+
+.cloud-overcast {
+  background: #ff0000;
+  color: #ffffff;
+}
+
+.bulletin-text {
+  width: 100%;
+  min-height: 160px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  font-size: 16px;
+  line-height: 1.6;
+  outline: none;
+}
+
+button {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 28px;
+  font-size: 17px;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #444;
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+
+  #pdf-area {
+    padding: 0;
+  }
+
+  button {
+    display: none;
+  }
+
+  .pdf-section {
+    page-break-inside: avoid;
+  }
+}
