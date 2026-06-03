@@ -9,62 +9,80 @@ body {
   background: #ffffff;
   color: #000000;
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
+/* MAIN PAGE CONTAINER */
 .container {
   width: 100%;
-  max-width: 980px;
+  max-width: 794px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 12px;
   background: #ffffff;
 }
 
+/* PDF AREA */
 #pdf-area {
   width: 100%;
+  max-width: 770px;
   background: #ffffff;
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
+/* SECTIONS */
 .pdf-section {
   width: 100%;
   background: #ffffff;
-  margin: 0 0 18px 0;
+  margin: 0 0 16px 0;
   padding: 0;
 }
 
 .first-section {
   page-break-before: auto;
+  break-before: auto;
 }
 
+/* TITLES */
 .center-title {
   text-align: center;
-  font-size: 27px;
+  font-size: 25px;
   font-weight: 800;
   margin: 4px 0 14px 0;
   line-height: 1.2;
 }
 
 .issue-time {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
-  margin: 4px 0 14px 0;
+  margin: 4px 0 6px 0;
   text-align: left;
+  color: #000000;
+}
+
+.issue-clock {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 14px 0;
+  text-align: left;
+  color: #8b0015;
 }
 
 .table-title {
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 800;
-  margin: 16px 0 8px 0;
+  margin: 15px 0 8px 0;
   line-height: 1.2;
 }
 
+/* TABLES */
 .cloud-info-table,
 .forecast-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  margin: 0 0 16px 0;
+  margin: 0 0 15px 0;
 }
 
 .cloud-info-table th,
@@ -72,10 +90,10 @@ body {
 .forecast-table th,
 .forecast-table td {
   border: 2px solid #222222;
-  padding: 6px;
+  padding: 5px;
   text-align: center;
   vertical-align: middle;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.15;
 }
@@ -86,36 +104,48 @@ body {
   font-weight: 800;
 }
 
-.cloud-info-table th:nth-child(1) {
+/* CLASSIFICATION TABLE COLUMN WIDTHS */
+.cloud-info-table th:nth-child(1),
+.cloud-info-table td:nth-child(1) {
   width: 8%;
 }
 
-.cloud-info-table th:nth-child(2) {
-  width: 28%;
+.cloud-info-table th:nth-child(2),
+.cloud-info-table td:nth-child(2) {
+  width: 27%;
 }
 
-.cloud-info-table th:nth-child(3) {
+.cloud-info-table th:nth-child(3),
+.cloud-info-table td:nth-child(3) {
   width: 18%;
 }
 
-.cloud-info-table th:nth-child(4) {
-  width: 46%;
+.cloud-info-table th:nth-child(4),
+.cloud-info-table td:nth-child(4) {
+  width: 47%;
 }
 
-.forecast-table th:nth-child(1) {
+/* FORECAST TABLE COLUMN WIDTHS */
+.forecast-table th:nth-child(1),
+.forecast-table td:nth-child(1) {
   width: 7%;
 }
 
-.forecast-table th:nth-child(2) {
-  width: 21%;
+.forecast-table th:nth-child(2),
+.forecast-table td:nth-child(2) {
+  width: 24%;
 }
 
 .forecast-table th:nth-child(3),
 .forecast-table th:nth-child(4),
-.forecast-table th:nth-child(5) {
-  width: 24%;
+.forecast-table th:nth-child(5),
+.forecast-table td:nth-child(3),
+.forecast-table td:nth-child(4),
+.forecast-table td:nth-child(5) {
+  width: 23%;
 }
 
+/* CLOUD CLASSIFICATION COLORS */
 .cloud-clear-row {
   background: #66ccff;
 }
@@ -127,10 +157,12 @@ body {
 
 .cloud-medium-row {
   background: #fff500;
+  color: #000000;
 }
 
 .cloud-high-row {
   background: #ff8a00;
+  color: #000000;
 }
 
 .cloud-overcast-row {
@@ -138,22 +170,25 @@ body {
   color: #ffffff;
 }
 
+/* HEADER INPUTS */
 .day-header-input {
   width: 100%;
-  height: 25px;
+  height: 24px;
   border: 1px solid #888888;
   padding: 3px 6px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   background: #ffffff;
+  color: #000000;
 }
 
+/* FORECAST SELECT BOXES */
 .forecast-select {
   width: 100%;
-  min-height: 28px;
+  min-height: 27px;
   border: 1px solid #ffffff;
-  padding: 4px 6px;
-  font-size: 12px;
+  padding: 4px 5px;
+  font-size: 11px;
   font-weight: 800;
   text-align: center;
   text-align-last: center;
@@ -164,16 +199,18 @@ body {
   -moz-appearance: none;
 }
 
+/* TABLE CELLS */
 .state-cell {
   font-weight: 800;
   background: #ffffff;
 }
 
 .area-cell {
-  font-weight: 600;
+  font-weight: 700;
   background: #ffffff;
 }
 
+/* MAP SECTION */
 .maps-section {
   page-break-before: always;
   break-before: page;
@@ -183,13 +220,13 @@ body {
   text-align: center;
   font-size: 18px;
   font-weight: 800;
-  margin: 12px 0 6px 0;
+  margin: 10px 0 6px 0;
   line-height: 1.2;
 }
 
 .map-wrapper {
   width: 100%;
-  height: 405px;
+  height: 360px;
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
   position: relative;
@@ -202,18 +239,20 @@ body {
   width: 100%;
   height: 100%;
   display: block;
+  background: #ffffff;
 }
 
+/* MAP LEGEND */
 .map-legend {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 12px;
+  right: 12px;
   background: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 4px;
   padding: 7px 9px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10.5px;
+  font-weight: 700;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
   z-index: 5;
 }
@@ -245,21 +284,25 @@ body {
   );
 }
 
+/* WEATHER SYSTEM */
 .weather-section {
   page-break-before: always;
   break-before: page;
 }
 
 .bulletin-text {
+  width: 100%;
   min-height: 220px;
   border: 1px solid #d0d0d0;
   padding: 12px;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.6;
   outline: none;
   white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
+/* BUTTON */
 #download-btn {
   display: block;
   margin: 20px auto;
@@ -273,45 +316,110 @@ body {
   cursor: pointer;
 }
 
-.issue-clock {
-  font-size: 19px;
-  font-weight: 800;
-  margin: -8px 0 16px 0;
-  text-align: left;
-  color: #8b0015;
-}
-
 #download-btn:hover {
   background: #444444;
 }
 
-@media print {
-  html,
-  body {
-    width: 210mm;
-    margin: 0;
-    padding: 0;
-    background: #ffffff;
-  }
-
+/* MOBILE VIEW */
+@media screen and (max-width: 820px) {
   .container {
-    width: 210mm;
-    max-width: none;
-    padding: 8mm;
-    margin: 0;
+    max-width: 100%;
+    padding: 8px;
   }
 
   #pdf-area {
-    width: 100%;
+    max-width: 100%;
+  }
+
+  .center-title {
+    font-size: 22px;
+  }
+
+  .issue-time,
+  .issue-clock {
+    font-size: 16px;
+  }
+
+  .table-title {
+    font-size: 19px;
+  }
+
+  .cloud-info-table th,
+  .cloud-info-table td,
+  .forecast-table th,
+  .forecast-table td {
+    font-size: 10px;
+    padding: 4px;
+  }
+
+  .forecast-select {
+    font-size: 10px;
+    min-height: 25px;
+  }
+
+  .map-wrapper {
+    height: 320px;
+  }
+
+  .map-legend {
+    font-size: 9px;
+    padding: 6px;
+  }
+}
+
+/* PRINT / PDF FIX */
+@media print {
+  html,
+  body {
+    width: 794px;
     margin: 0;
     padding: 0;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .container {
+    width: 794px;
+    max-width: 794px;
+    padding: 10px;
+    margin: 0 auto;
+  }
+
+  #pdf-area {
+    width: 770px;
+    max-width: 770px;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
   }
 
   #download-btn {
     display: none;
   }
 
-  .pdf-section {
+  .center-title {
+    font-size: 25px;
+  }
+
+  .issue-time {
+    font-size: 19px;
+  }
+
+  .issue-clock {
+    font-size: 18px;
+  }
+
+  .table-title {
+    font-size: 21px;
+  }
+
+  .cloud-info-table,
+  .forecast-table {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  tr {
     page-break-inside: avoid;
     break-inside: avoid;
   }
@@ -324,5 +432,15 @@ body {
   .weather-section {
     page-break-before: always;
     break-before: page;
+  }
+
+  .map-wrapper {
+    height: 360px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .bulletin-text {
+    min-height: 220px;
   }
 }
