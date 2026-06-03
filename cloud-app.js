@@ -70,6 +70,7 @@ function createForecastCell(area, stateBlock, dayKey) {
   const cell = document.createElement("td");
 
   const select = createForecastSelect(area[dayKey]);
+
   select.dataset.state = stateBlock.fullState;
   select.dataset.area = area.mapName;
   select.dataset.day = dayKey;
@@ -85,6 +86,7 @@ function createForecastSelect(selectedValue) {
 
   CLOUD_CATEGORIES.forEach((category) => {
     const option = document.createElement("option");
+
     option.value = category;
     option.textContent = category;
 
@@ -129,12 +131,16 @@ async function loadAllMaps() {
 async function loadGeoJson() {
   for (const url of GEO_URLS) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        cache: "no-store"
+      });
 
       if (response.ok) {
         console.log("GeoJSON loaded from:", url);
         return await response.json();
       }
+
+      console.warn("GeoJSON failed:", url, response.status);
     } catch (error) {
       console.warn("Could not load GeoJSON from:", url, error);
     }
@@ -151,30 +157,48 @@ function updateAllMaps() {
   drawMap("cloudMapDay3", "legendDay3", window.cloudGeoData, "day3");
 }
 
-function getCurrentForecastMap(dayKey) {
-  const result = {};
+function getForecastEntries(dayKey) {
+  const entries = [];
   const selects = document.querySelectorAll(`.forecast-select[data-day="${dayKey}"]`);
 
   selects.forEach((select) => {
-    const originalArea = select.dataset.area;
-    const normalizedArea = normalizeName(originalArea);
+    const mainName = normalizeName(select.dataset.area);
+    const names = [mainName];
 
-    result[normalizedArea] = select.value;
+    const aliases = MAP_NAME_ALIASES[mainName];
 
-    const aliases = MAP_NAME_ALIASES[normalizedArea];
-
-    if (aliases) {
+    if (aliases && Array.isArray(aliases)) {
       aliases.forEach((alias) => {
-        result[normalizeName(alias)] = select.value;
+        names.push(normalizeName(alias));
       });
     }
+
+    entries.push({
+      names: [...new Set(names)],
+      category: select.value
+    });
   });
 
-  return result;
+  return entries;
+}
+
+function getCategoryForFeature(featureName, entries) {
+  const normalizedFeature = normalizeName(featureName);
+
+  for (const entry of entries) {
+    if (entry.names.includes(normalizedFeature)) {
+      return entry.category;
+    }
+  }
+
+  return null;
 }
 
 function drawMap(svgId, legendId, geoData, dayKey) {
   const svgElement = document.getElementById(svgId);
+
+  if (!svgElement) return;
+
   const wrapper = svgElement.closest(".map-wrapper");
 
   const width = wrapper.clientWidth || 900;
@@ -196,22 +220,25 @@ function drawMap(svgId, legendId, geoData, dayKey) {
     return;
   }
 
-  const projection = d3.geoMercator().fitSize([width * 0.86, height * 0.92], {
-    type: "FeatureCollection",
-    features: features
-  });
+  const projection = d3.geoMercator().fitExtent(
+    [
+      [20, 10],
+      [width - 160, height - 20]
+    ],
+    {
+      type: "FeatureCollection",
+      features: features
+    }
+  );
 
   const path = d3.geoPath().projection(projection);
 
-  const forecastMap = getCurrentForecastMap(dayKey);
+  const entries = getForecastEntries(dayKey);
 
   createHatchPattern(svg, svgId);
 
-  const mapGroup = svg
+  svg
     .append("g")
-    .attr("transform", `translate(${width * 0.03}, ${height * 0.02})`);
-
-  mapGroup
     .selectAll("path")
     .data(features)
     .enter()
@@ -219,8 +246,7 @@ function drawMap(svgId, legendId, geoData, dayKey) {
     .attr("d", path)
     .attr("fill", (d) => {
       const featureName = getFeatureName(d);
-      const normalizedFeatureName = normalizeName(featureName);
-      const category = forecastMap[normalizedFeatureName];
+      const category = getCategoryForFeature(featureName, entries);
 
       if (!category) {
         return `url(#hatch-${svgId})`;
@@ -283,13 +309,17 @@ function getFeatureName(feature) {
     props.Sub_Division ||
     props.subdivision ||
     props.SUBDIV ||
+    props.SUBDIVISION_NAME ||
+    props.DISTRICT ||
+    props.District ||
+    props.district ||
     props.NAME ||
     props.Name ||
     props.name ||
     props.NAME_1 ||
     props.ST_NM ||
-    props.state ||
     props.STATE ||
+    props.state ||
     ""
   );
 }
@@ -356,12 +386,14 @@ function downloadPDF() {
     const options = {
       margin: [0.15, 0.15, 0.15, 0.15],
       filename: "Cloud_Forecast_Bulletin.pdf",
+
       image: {
         type: "jpeg",
         quality: 0.98
       },
+
       html2canvas: {
-        scale: 1.5,
+        scale: 1.4,
         useCORS: true,
         backgroundColor: "#ffffff",
         scrollX: 0,
@@ -369,11 +401,13 @@ function downloadPDF() {
         windowWidth: element.scrollWidth,
         windowHeight: element.scrollHeight
       },
+
       jsPDF: {
         unit: "in",
         format: "a4",
         orientation: "portrait"
       },
+
       pagebreak: {
         mode: ["css", "legacy"],
         before: [".maps-section", ".weather-section"],
