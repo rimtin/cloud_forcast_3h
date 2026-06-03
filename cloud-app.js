@@ -6,8 +6,6 @@ const CLOUD_GEO_URLS = [
   "https://rimtin.github.io/cloud_forcast_3h/indian_met_zones.geojson",
   "https://raw.githubusercontent.com/rimtin/cloud_forcast_3h/main/indian_met_zones.geojson",
   "https://cdn.jsdelivr.net/gh/rimtin/cloud_forcast_3h@main/indian_met_zones.geojson",
-
-  /* Wind repo fallback because your wind map file is working */
   "https://rimtin.github.io/wind_bulletin/indian_met_zones.geojson",
   "https://raw.githubusercontent.com/rimtin/wind_bulletin/main/indian_met_zones.geojson",
   "https://cdn.jsdelivr.net/gh/rimtin/wind_bulletin@main/indian_met_zones.geojson"
@@ -130,7 +128,6 @@ function applyCloudDropdownColor(select) {
   }
 }
 
-/* This follows your working wind-app mapping style */
 const cloudGeoNameMap = {
   "Punjab": "Punjab",
 
@@ -175,7 +172,6 @@ function normalizeName(name) {
     .replace(/\./g, "")
     .replace(/kachh/g, "kutch")
     .replace(/kachchh/g, "kutch")
-    .replace(/gujarat region/g, "gujarat region")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -215,6 +211,10 @@ function getSubdivisionColor(geoName, dayNumber) {
     if (normalizeName(mappedGeoName) === target) {
       const select = row.querySelectorAll("select")[dayNumber - 1];
       const selected = select?.value;
+
+      if (selected === "No Forecast / Not Used") {
+        return null;
+      }
 
       return CLOUD_COLORS[selected] || null;
     }
@@ -311,14 +311,12 @@ function buildLegend() {
   const legendHTML = `
     ${CLOUD_CATEGORIES.map(option => `
       <div class="legend-item">
-        <span class="legend-box" style="background:${CLOUD_COLORS[option]}"></span>
+        <span class="legend-box ${option === "No Forecast / Not Used" ? "no-forecast-box" : ""}"
+              style="${option !== "No Forecast / Not Used" ? `background:${CLOUD_COLORS[option]}` : ""}">
+        </span>
         ${option}
       </div>
     `).join("")}
-    <div class="legend-item">
-      <span class="legend-box no-forecast-box"></span>
-      No Forecast / Not Used
-    </div>
   `;
 
   ["legendDay1", "legendDay2", "legendDay3"].forEach(id => {
