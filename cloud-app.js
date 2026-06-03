@@ -35,7 +35,6 @@ function setAutomaticIssueDate() {
 
 function buildForecastTable() {
   const tableBody = document.getElementById("cloud-table-body");
-
   if (!tableBody) return;
 
   tableBody.innerHTML = "";
@@ -70,13 +69,11 @@ function createForecastCell(area, stateBlock, dayKey) {
   const cell = document.createElement("td");
 
   const select = createForecastSelect(area[dayKey]);
-
   select.dataset.state = stateBlock.fullState;
   select.dataset.area = area.mapName;
   select.dataset.day = dayKey;
 
   cell.appendChild(select);
-
   return cell;
 }
 
@@ -86,7 +83,6 @@ function createForecastSelect(selectedValue) {
 
   CLOUD_CATEGORIES.forEach((category) => {
     const option = document.createElement("option");
-
     option.value = category;
     option.textContent = category;
 
@@ -109,7 +105,6 @@ function createForecastSelect(selectedValue) {
 
 function applySelectStyle(select) {
   const value = select.value;
-
   select.style.backgroundColor = CLOUD_COLORS[value] || "#ffffff";
   select.style.color = CLOUD_TEXT_COLORS[value] || "#000000";
 }
@@ -117,12 +112,11 @@ function applySelectStyle(select) {
 async function loadAllMaps() {
   try {
     const geoData = await loadGeoJson();
-
     window.cloudGeoData = geoData;
 
     setTimeout(() => {
       updateAllMaps();
-    }, 300);
+    }, 500);
   } catch (error) {
     console.error("Map loading failed:", error);
   }
@@ -196,7 +190,6 @@ function getCategoryForFeature(featureName, entries) {
 
 function drawMap(svgId, legendId, geoData, dayKey) {
   const svgElement = document.getElementById(svgId);
-
   if (!svgElement) return;
 
   const wrapper = svgElement.closest(".map-wrapper");
@@ -220,10 +213,13 @@ function drawMap(svgId, legendId, geoData, dayKey) {
     return;
   }
 
+  console.log("Map features found:", features.length);
+  console.log("Sample properties:", features[0].properties);
+
   const projection = d3.geoMercator().fitExtent(
     [
-      [20, 10],
-      [width - 160, height - 20]
+      [30, 20],
+      [width - 180, height - 20]
     ],
     {
       type: "FeatureCollection",
@@ -232,7 +228,6 @@ function drawMap(svgId, legendId, geoData, dayKey) {
   );
 
   const path = d3.geoPath().projection(projection);
-
   const entries = getForecastEntries(dayKey);
 
   createHatchPattern(svg, svgId);
@@ -255,7 +250,7 @@ function drawMap(svgId, legendId, geoData, dayKey) {
       return CLOUD_COLORS[category] || "#ffffff";
     })
     .attr("stroke", "#555555")
-    .attr("stroke-width", 0.6);
+    .attr("stroke-width", 0.65);
 
   createLegend(legendId);
 }
@@ -293,8 +288,23 @@ function getGeoFeatures(geoData) {
   }
 
   if (geoData.type === "Topology") {
-    const objectKey = Object.keys(geoData.objects)[0];
-    return topojson.feature(geoData, geoData.objects[objectKey]).features;
+    const objectKeys = Object.keys(geoData.objects);
+
+    let bestKey = objectKeys[0];
+    let maxCount = 0;
+
+    objectKeys.forEach((key) => {
+      const obj = geoData.objects[key];
+
+      if (obj && obj.geometries && obj.geometries.length > maxCount) {
+        maxCount = obj.geometries.length;
+        bestKey = key;
+      }
+    });
+
+    console.log("Using TopoJSON object:", bestKey);
+
+    return topojson.feature(geoData, geoData.objects[bestKey]).features;
   }
 
   return [];
@@ -310,6 +320,8 @@ function getFeatureName(feature) {
     props.subdivision ||
     props.SUBDIV ||
     props.SUBDIVISION_NAME ||
+    props.MET_SUBDIV ||
+    props.MET_SUB_DIV ||
     props.DISTRICT ||
     props.District ||
     props.district ||
@@ -320,6 +332,7 @@ function getFeatureName(feature) {
     props.ST_NM ||
     props.STATE ||
     props.state ||
+    props.ST_NAME ||
     ""
   );
 }
@@ -337,7 +350,6 @@ function normalizeName(name) {
 
 function createLegend(legendId) {
   const legend = document.getElementById(legendId);
-
   if (!legend) return;
 
   legend.innerHTML = "";
@@ -384,34 +396,34 @@ function downloadPDF() {
 
   setTimeout(() => {
     const options = {
-      margin: [0.15, 0.15, 0.15, 0.15],
+      margin: [0.1, 0.1, 0.1, 0.1],
       filename: "Cloud_Forecast_Bulletin.pdf",
 
       image: {
         type: "jpeg",
-        quality: 0.98
+        quality: 0.96
       },
 
       html2canvas: {
-        scale: 1.4,
+        scale: 1.8,
         useCORS: true,
         backgroundColor: "#ffffff",
         scrollX: 0,
         scrollY: 0,
-        windowWidth: element.scrollWidth,
+        windowWidth: 794,
         windowHeight: element.scrollHeight
       },
 
       jsPDF: {
-        unit: "in",
-        format: "a4",
+        unit: "px",
+        format: [794, 1123],
         orientation: "portrait"
       },
 
       pagebreak: {
         mode: ["css", "legacy"],
         before: [".maps-section", ".weather-section"],
-        avoid: ["table", "tr", ".map-wrapper"]
+        avoid: ["table", "tr"]
       }
     };
 
@@ -424,5 +436,5 @@ function downloadPDF() {
           button.style.display = "block";
         }
       });
-  }, 500);
+  }, 600);
 }
