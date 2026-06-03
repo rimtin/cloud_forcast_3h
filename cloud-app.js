@@ -331,14 +331,14 @@ function downloadPDF() {
   const element = document.getElementById("pdf-area");
 
   const opt = {
-    margin: [0.12, 0.12, 0.12, 0.12],
+    margin: [0.1, 0.1, 0.1, 0.1],
     filename: "Cloud_Forecast_Bulletin.pdf",
     image: {
       type: "jpeg",
-      quality: 0.7
+      quality: 0.75
     },
     html2canvas: {
-      scale: 1.05,
+      scale: 1,
       useCORS: true,
       allowTaint: true,
       backgroundColor: "#ffffff",
@@ -353,7 +353,8 @@ function downloadPDF() {
     },
     pagebreak: {
       mode: ["css", "legacy"],
-      avoid: ["table", ".map-wrapper"]
+      before: [".maps-section", ".weather-section"],
+      avoid: [".map-wrapper"]
     }
   };
 
