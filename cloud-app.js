@@ -45,33 +45,26 @@ function buildForecastTable() {
       areaCell.className = "area-cell";
       row.appendChild(areaCell);
 
-      const day1Cell = document.createElement("td");
-      const day1Select = createForecastSelect(area.day1);
-      day1Select.dataset.state = stateBlock.fullState;
-      day1Select.dataset.area = area.mapName;
-      day1Select.dataset.day = "day1";
-      day1Cell.appendChild(day1Select);
-      row.appendChild(day1Cell);
-
-      const day2Cell = document.createElement("td");
-      const day2Select = createForecastSelect(area.day2);
-      day2Select.dataset.state = stateBlock.fullState;
-      day2Select.dataset.area = area.mapName;
-      day2Select.dataset.day = "day2";
-      day2Cell.appendChild(day2Select);
-      row.appendChild(day2Cell);
-
-      const day3Cell = document.createElement("td");
-      const day3Select = createForecastSelect(area.day3);
-      day3Select.dataset.state = stateBlock.fullState;
-      day3Select.dataset.area = area.mapName;
-      day3Select.dataset.day = "day3";
-      day3Cell.appendChild(day3Select);
-      row.appendChild(day3Cell);
+      row.appendChild(createForecastCell(area, stateBlock, "day1"));
+      row.appendChild(createForecastCell(area, stateBlock, "day2"));
+      row.appendChild(createForecastCell(area, stateBlock, "day3"));
 
       tableBody.appendChild(row);
     });
   });
+}
+
+function createForecastCell(area, stateBlock, dayKey) {
+  const cell = document.createElement("td");
+
+  const select = createForecastSelect(area[dayKey]);
+  select.dataset.state = stateBlock.fullState;
+  select.dataset.area = area.mapName;
+  select.dataset.day = dayKey;
+
+  cell.appendChild(select);
+
+  return cell;
 }
 
 function createForecastSelect(selectedValue) {
@@ -111,11 +104,11 @@ async function loadAllMaps() {
   try {
     const geoData = await loadGeoJson();
 
-    drawMap("cloudMapDay1", "legendDay1", geoData, "day1");
-    drawMap("cloudMapDay2", "legendDay2", geoData, "day2");
-    drawMap("cloudMapDay3", "legendDay3", geoData, "day3");
-
     window.cloudGeoData = geoData;
+
+    setTimeout(() => {
+      updateAllMaps();
+    }, 300);
   } catch (error) {
     console.error("Map loading failed:", error);
   }
@@ -127,10 +120,11 @@ async function loadGeoJson() {
       const response = await fetch(url);
 
       if (response.ok) {
+        console.log("GeoJSON loaded from:", url);
         return await response.json();
       }
     } catch (error) {
-      console.warn(`Could not load: ${url}`);
+      console.warn("Could not load GeoJSON from:", url, error);
     }
   }
 
@@ -147,30 +141,50 @@ function updateAllMaps() {
 
 function getCurrentForecastMap(dayKey) {
   const result = {};
-
   const selects = document.querySelectorAll(`.forecast-select[data-day="${dayKey}"]`);
 
   selects.forEach((select) => {
-    const areaName = normalizeName(select.dataset.area);
-    result[areaName] = select.value;
+    const originalArea = select.dataset.area;
+    const normalizedArea = normalizeName(originalArea);
+
+    result[normalizedArea] = select.value;
+
+    const aliases = MAP_NAME_ALIASES[normalizedArea];
+
+    if (aliases) {
+      aliases.forEach((alias) => {
+        result[normalizeName(alias)] = select.value;
+      });
+    }
   });
 
   return result;
 }
 
 function drawMap(svgId, legendId, geoData, dayKey) {
+  const svgElement = document.getElementById(svgId);
+  const wrapper = svgElement.closest(".map-wrapper");
+
+  const width = wrapper.clientWidth || 900;
+  const height = wrapper.clientHeight || 405;
+
   const svg = d3.select(`#${svgId}`);
   svg.selectAll("*").remove();
 
-  const wrapper = document.getElementById(svgId).parentElement;
-  const width = wrapper.clientWidth;
-  const height = wrapper.clientHeight;
-
-  svg.attr("viewBox", `0 0 ${width} ${height}`);
+  svg
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet");
 
   const features = getGeoFeatures(geoData);
 
-  const projection = d3.geoMercator().fitSize([width, height], {
+  if (!features || features.length === 0) {
+    console.error("No map features found in GeoJSON.");
+    return;
+  }
+
+  const projection = d3.geoMercator().fitSize([width * 0.86, height * 0.92], {
     type: "FeatureCollection",
     features: features
   });
@@ -179,6 +193,36 @@ function drawMap(svgId, legendId, geoData, dayKey) {
 
   const forecastMap = getCurrentForecastMap(dayKey);
 
+  createHatchPattern(svg, svgId);
+
+  const mapGroup = svg
+    .append("g")
+    .attr("transform", `translate(${width * 0.03}, ${height * 0.02})`);
+
+  mapGroup
+    .selectAll("path")
+    .data(features)
+    .enter()
+    .append("path")
+    .attr("d", path)
+    .attr("fill", (d) => {
+      const featureName = getFeatureName(d);
+      const normalizedFeatureName = normalizeName(featureName);
+      const category = forecastMap[normalizedFeatureName];
+
+      if (!category) {
+        return `url(#hatch-${svgId})`;
+      }
+
+      return CLOUD_COLORS[category] || "#ffffff";
+    })
+    .attr("stroke", "#555555")
+    .attr("stroke-width", 0.6);
+
+  createLegend(legendId);
+}
+
+function createHatchPattern(svg, svgId) {
   const defs = svg.append("defs");
 
   const pattern = defs
@@ -203,28 +247,6 @@ function drawMap(svgId, legendId, geoData, dayKey) {
     .attr("y2", 8)
     .attr("stroke", "#b8b8b8")
     .attr("stroke-width", 2);
-
-  svg
-    .append("g")
-    .selectAll("path")
-    .data(features)
-    .enter()
-    .append("path")
-    .attr("d", path)
-    .attr("fill", (d) => {
-      const name = getFeatureName(d);
-      const category = forecastMap[normalizeName(name)];
-
-      if (!category) {
-        return `url(#hatch-${svgId})`;
-      }
-
-      return CLOUD_COLORS[category] || "#ffffff";
-    })
-    .attr("stroke", "#555555")
-    .attr("stroke-width", 0.7);
-
-  createLegend(legendId);
 }
 
 function getGeoFeatures(geoData) {
@@ -245,12 +267,17 @@ function getFeatureName(feature) {
 
   return (
     props.SUBDIVISION ||
+    props.SUB_DIVISION ||
+    props.Sub_Division ||
     props.subdivision ||
+    props.SUBDIV ||
+    props.NAME ||
+    props.Name ||
+    props.name ||
     props.NAME_1 ||
     props.ST_NM ||
     props.state ||
-    props.name ||
-    props.Name ||
+    props.STATE ||
     ""
   );
 }
@@ -261,6 +288,7 @@ function normalizeName(name) {
     .replace(/&/g, "and")
     .replace(/,/g, "")
     .replace(/\./g, "")
+    .replace(/-/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -304,25 +332,51 @@ function createLegend(legendId) {
 
 function downloadPDF() {
   const element = document.getElementById("pdf-area");
+  const button = document.getElementById("download-btn");
 
-  const options = {
-    margin: 0.2,
-    filename: "Cloud_Forecast_Bulletin.pdf",
-    image: {
-      type: "jpeg",
-      quality: 0.98
-    },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff"
-    },
-    jsPDF: {
-      unit: "in",
-      format: "a4",
-      orientation: "portrait"
-    }
-  };
+  if (button) {
+    button.style.display = "none";
+  }
 
-  html2pdf().set(options).from(element).save();
+  window.scrollTo(0, 0);
+
+  setTimeout(() => {
+    const options = {
+      margin: [0.15, 0.15, 0.15, 0.15],
+      filename: "Cloud_Forecast_Bulletin.pdf",
+      image: {
+        type: "jpeg",
+        quality: 0.98
+      },
+      html2canvas: {
+        scale: 1.5,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
+      },
+      jsPDF: {
+        unit: "in",
+        format: "a4",
+        orientation: "portrait"
+      },
+      pagebreak: {
+        mode: ["css", "legacy"],
+        before: [".maps-section", ".weather-section"],
+        avoid: ["table", "tr", ".map-wrapper"]
+      }
+    };
+
+    html2pdf()
+      .set(options)
+      .from(element)
+      .save()
+      .then(() => {
+        if (button) {
+          button.style.display = "block";
+        }
+      });
+  }, 500);
 }
