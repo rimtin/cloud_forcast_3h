@@ -14,15 +14,15 @@ body {
 
 .container {
   width: 100%;
-  max-width: 900px;
+  max-width: 980px;
   margin: 0 auto;
-  padding: 14px;
+  padding: 10px;
   background: #ffffff;
 }
 
 #pdf-area {
   width: 100%;
-  max-width: 870px;
+  max-width: 950px;
   background: #ffffff;
   padding: 0;
   margin: 0 auto;
@@ -32,52 +32,48 @@ body {
 .pdf-section {
   width: 100%;
   background: #ffffff;
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
   padding: 0;
-}
-
-.first-section {
-  page-break-before: auto;
-  break-before: auto;
 }
 
 .center-title {
   text-align: center;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
-  margin: 4px 0 14px 0;
-  line-height: 1.2;
+  margin: 3px 0 10px 0;
+  line-height: 1.1;
 }
 
 .issue-time {
-  font-size: 21px;
+  font-size: 17px;
   font-weight: 800;
-  margin: 4px 0 6px 0;
+  margin: 3px 0 4px 0;
   text-align: left;
   color: #000000;
 }
 
 .issue-clock {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 800;
-  margin: 0 0 15px 0;
+  margin: 0 0 8px 0;
   text-align: left;
   color: #8b0015;
 }
 
 .table-title {
-  font-size: 23px;
+  font-size: 19px;
   font-weight: 800;
-  margin: 16px 0 8px 0;
-  line-height: 1.2;
+  margin: 10px 0 6px 0;
+  line-height: 1.1;
 }
 
+/* TABLES */
 .cloud-info-table,
 .forecast-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  margin: 0 0 16px 0;
+  margin: 0 0 10px 0;
   border: 2px solid #222222;
 }
 
@@ -86,12 +82,12 @@ body {
 .forecast-table th,
 .forecast-table td {
   border: 2px solid #222222;
-  padding: 6px;
+  padding: 3px 4px;
   text-align: center;
   vertical-align: middle;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.05;
 }
 
 .cloud-info-table th,
@@ -139,6 +135,7 @@ body {
   width: 23%;
 }
 
+/* CLASSIFICATION COLORS */
 .cloud-clear-row {
   background: #66ccff;
   color: #000000;
@@ -164,30 +161,28 @@ body {
   color: #ffffff;
 }
 
+/* HEADER INPUTS */
 .day-header-input {
   width: 100%;
-  height: 27px;
-  border: 1.5px solid #777777;
-  padding: 3px 6px;
-  font-size: 14px;
+  height: 20px;
+  border: 1px solid #777777;
+  padding: 2px 5px;
+  font-size: 11px;
   font-weight: 700;
   background: #ffffff;
   color: #000000;
 }
 
-.forecast-table td {
-  padding: 5px 6px;
-}
-
+/* DROPDOWNS */
 .forecast-table select,
 .forecast-select,
 #cloud-table-body select {
   width: 100%;
-  height: 30px;
-  min-height: 30px;
-  border: 1px solid #222222;
-  padding: 4px 22px 4px 6px;
-  font-size: 12px;
+  height: 21px;
+  min-height: 21px;
+  border: 1px solid #ffffff;
+  padding: 2px 18px 2px 5px;
+  font-size: 10px;
   font-weight: 800;
   text-align: left;
   outline: none;
@@ -207,6 +202,7 @@ body {
   background: #ffffff;
 }
 
+/* MAP SECTION */
 .maps-section {
   page-break-before: always;
   break-before: page;
@@ -214,19 +210,19 @@ body {
 
 .map-label {
   text-align: center;
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 800;
-  margin: 12px 0 6px 0;
-  line-height: 1.2;
+  margin: 8px 0 4px 0;
+  line-height: 1.1;
 }
 
 .map-wrapper {
   width: 100%;
-  height: 390px;
-  border-top: 2px solid #cccccc;
-  border-bottom: 2px solid #cccccc;
+  height: 345px;
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
   position: relative;
-  margin: 0 0 14px 0;
+  margin: 0 0 8px 0;
   background: #ffffff;
   overflow: hidden;
 }
@@ -240,13 +236,13 @@ body {
 
 .map-legend {
   position: absolute;
-  top: 12px;
+  top: 10px;
   right: 12px;
   background: #ffffff;
-  border: 1.5px solid #cccccc;
+  border: 1px solid #cccccc;
   border-radius: 4px;
-  padding: 7px 9px;
-  font-size: 10.5px;
+  padding: 6px 8px;
+  font-size: 9.5px;
   font-weight: 700;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
   z-index: 5;
@@ -255,17 +251,17 @@ body {
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: 5px;
+  margin-bottom: 3px;
   white-space: nowrap;
 }
 
 .legend-box,
 .legend-color,
 .legend-hatch {
-  width: 14px;
-  height: 14px;
-  border: 1.5px solid #555555;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #555555;
   display: inline-block;
   flex-shrink: 0;
 }
@@ -281,6 +277,7 @@ body {
   );
 }
 
+/* WEATHER SYSTEM */
 .weather-section {
   page-break-before: always;
   break-before: page;
@@ -288,11 +285,11 @@ body {
 
 .bulletin-text {
   width: 100%;
-  min-height: 220px;
-  border: 2px solid #d0d0d0;
+  min-height: 190px;
+  border: 1px solid #d0d0d0;
   padding: 12px;
-  font-size: 17px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.5;
   outline: none;
   white-space: pre-wrap;
   overflow-wrap: break-word;
@@ -315,65 +312,11 @@ body {
   background: #444444;
 }
 
-@media screen and (max-width: 920px) {
-  .container {
-    max-width: 100%;
-    padding: 8px;
-  }
-
-  #pdf-area {
-    max-width: 100%;
-  }
-
-  .center-title {
-    font-size: 23px;
-  }
-
-  .issue-time,
-  .issue-clock {
-    font-size: 17px;
-  }
-
-  .table-title {
-    font-size: 20px;
-  }
-
-  .cloud-info-table th,
-  .cloud-info-table td,
-  .forecast-table th,
-  .forecast-table td {
-    font-size: 10.5px;
-    padding: 4px;
-    border: 2px solid #222222;
-  }
-
-  .forecast-table select,
-  .forecast-select,
-  #cloud-table-body select {
-    font-size: 10px;
-    min-height: 26px;
-    height: 26px;
-  }
-
-  .day-header-input {
-    font-size: 11px;
-    height: 24px;
-  }
-
-  .map-wrapper {
-    height: 330px;
-  }
-
-  .map-legend {
-    font-size: 9px;
-    padding: 6px;
-  }
-}
-
+/* PRINT / PDF */
 @media print {
   html,
   body {
-    width: 794px;
+    width: 210mm;
     margin: 0;
     padding: 0;
     background: #ffffff;
@@ -381,15 +324,15 @@ body {
   }
 
   .container {
-    width: 794px;
-    max-width: 794px;
-    padding: 10px;
+    width: 210mm;
+    max-width: 210mm;
+    padding: 5mm;
     margin: 0 auto;
   }
 
   #pdf-area {
-    width: 770px;
-    max-width: 770px;
+    width: 100%;
+    max-width: 100%;
     margin: 0 auto;
     padding: 0;
     overflow: hidden;
@@ -400,33 +343,25 @@ body {
   }
 
   .center-title {
-    font-size: 25px;
+    font-size: 23px;
   }
 
   .issue-time {
-    font-size: 19px;
+    font-size: 16px;
   }
 
   .issue-clock {
-    font-size: 18px;
+    font-size: 15px;
   }
 
   .table-title {
-    font-size: 21px;
+    font-size: 18px;
   }
 
   .cloud-info-table,
   .forecast-table {
-    border: 2px solid #222222;
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-
-  .cloud-info-table th,
-  .cloud-info-table td,
-  .forecast-table th,
-  .forecast-table td {
-    border: 2px solid #222222;
+    page-break-inside: auto;
+    break-inside: auto;
   }
 
   tr {
@@ -445,12 +380,8 @@ body {
   }
 
   .map-wrapper {
-    height: 370px;
+    height: 345px;
     page-break-inside: avoid;
     break-inside: avoid;
-  }
-
-  .bulletin-text {
-    min-height: 220px;
   }
 }
