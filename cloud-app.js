@@ -252,7 +252,7 @@ async function drawCloudMap(svgId, dayNumber) {
   svg.selectAll("*").remove();
 
   const width = 860;
-  const height = 520;
+  const height = 430;
   const patternId = `noForecastPatternCloudDay${dayNumber}`;
 
   svg
@@ -266,7 +266,7 @@ async function drawCloudMap(svgId, dayNumber) {
 
     const projection = d3.geoIdentity()
       .reflectY(true)
-      .fitExtent([[25, 25], [width - 25, height - 25]], data);
+      .fitExtent([[70, 20], [width - 150, height - 25]], data);
 
     const path = d3.geoPath().projection(projection);
 
@@ -354,7 +354,7 @@ function downloadPDF() {
     pagebreak: {
       mode: ["css", "legacy"],
       before: [".maps-section", ".weather-section"],
-      avoid: [".map-wrapper"]
+      avoid: [".map-block", ".map-wrapper"]
     }
   };
 
