@@ -400,42 +400,83 @@ function buildLegend() {
    Same style approach as Wind Bulletin
 ========================================================= */
 
-function downloadPDF() {
-  updateIssueTime();
+async function downloadPDF() {
+  const pdfArea = document.getElementById("pdf-area");
 
-  const element = document.getElementById("pdf-area");
+  if (!pdfArea) {
+    alert("PDF area not found.");
+    return;
+  }
 
-  const opt = {
-    margin: 0.3,
-    filename: "Cloud_Forecast_Bulletin.pdf",
-    image: {
-      type: "jpeg",
-      quality: 0.98
-    },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#ffffff",
-      logging: false,
-      scrollX: 0,
-      scrollY: 0,
-      windowWidth: 794
-    },
-    jsPDF: {
-      unit: "in",
-      format: "a4",
-      orientation: "portrait",
-      compress: true
-    },
-    pagebreak: {
-      mode: ["css", "legacy"],
-      before: [".maps-section", ".weather-section"],
-      avoid: [".map-block", ".map-wrapper", "tr"]
+  const button =
+    document.getElementById("download-pdf") ||
+    document.getElementById("downloadPdf") ||
+    document.querySelector("button[onclick='downloadPDF()']");
+
+  try {
+    if (button) {
+      button.disabled = true;
+      button.innerText = "Preparing PDF...";
     }
-  };
 
-  html2pdf().set(opt).from(element).save();
+    document.body.classList.add("pdf-capturing");
+    pdfArea.classList.add("pdf-export-mode");
+
+    /*
+      Important:
+      This gives D3 maps, SVGs, tables and fonts time to settle
+      before html2pdf captures the page.
+    */
+    await new Promise((resolve) => setTimeout(resolve, 700));
+
+    const opt = {
+      margin: [4, 4, 4, 4],
+      filename: "Cloud_Forecast_Bulletin.pdf",
+      image: {
+        type: "jpeg",
+        quality: 0.98
+      },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 794
+      },
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait"
+      },
+      pagebreak: {
+        mode: ["avoid-all", "css", "legacy"],
+        avoid: [
+          ".pdf-section",
+          ".map-box",
+          ".map-container",
+          ".legend",
+          "table",
+          "tr"
+        ]
+      }
+    };
+
+    await html2pdf().set(opt).from(pdfArea).save();
+
+  } catch (error) {
+    console.error("PDF download failed:", error);
+    alert("PDF download failed. Please check console for error.");
+  } finally {
+    pdfArea.classList.remove("pdf-export-mode");
+    document.body.classList.remove("pdf-capturing");
+
+    if (button) {
+      button.disabled = false;
+      button.innerText = "Download PDF";
+    }
+  }
 }
 
 /* =========================================================
