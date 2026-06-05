@@ -243,7 +243,7 @@ function addNoForecastPattern(svg, patternId) {
     .attr("y1", 0)
     .attr("x2", 0)
     .attr("y2", 10)
-    .attr("stroke", "#777777")
+    .attr("stroke", "#777")
     .attr("stroke-width", 1.4);
 }
 
@@ -264,17 +264,12 @@ async function drawCloudMap(svgId, dayNumber) {
   try {
     const data = await loadCloudGeoJSON();
 
-    /*
-      Updated projection:
-      This gives extra bottom margin so the southern part of the map
-      does not get cut in PDF.
-    */
     const projection = d3.geoIdentity()
       .reflectY(true)
       .fitExtent(
         [
-          [55, 35],
-          [width - 105, height - 95]
+          [45, 25],
+          [width - 160, height - 55]
         ],
         data
       );
@@ -287,7 +282,7 @@ async function drawCloudMap(svgId, dayNumber) {
       .append("path")
       .attr("d", path)
       .attr("fill", `url(#${patternId})`)
-      .attr("stroke", "#333333")
+      .attr("stroke", "#333")
       .attr("stroke-width", 0.6)
       .attr("data-geo-name", d => getGeoNameFromFeature(d));
 
@@ -318,151 +313,58 @@ function updateSingleCloudMap(svgId, dayNumber) {
   });
 }
 
-/*
-  Updated legend:
-  Shows "No Forecast Available" clearly beside the hatch box.
-*/
 function buildLegend() {
-  const legendItems = [
-    {
-      label: "Clear Sky",
-      color: CLOUD_COLORS["Clear Sky"]
-    },
-    {
-      label: "Low Cloud Coverage",
-      color: CLOUD_COLORS["Low Cloud Coverage"]
-    },
-    {
-      label: "Medium Cloud Coverage",
-      color: CLOUD_COLORS["Medium Cloud Coverage"]
-    },
-    {
-      label: "High Cloud Coverage",
-      color: CLOUD_COLORS["High Cloud Coverage"]
-    },
-    {
-      label: "Overcast",
-      color: CLOUD_COLORS["Overcast"]
-    },
-    {
-      label: "No Forecast Available",
-      color: null
-    }
-  ];
-
-  const legendHTML = legendItems.map(item => {
-    if (item.color) {
-      return `
-        <div class="legend-item">
-          <span class="legend-box" style="background:${item.color};"></span>
-          <span class="legend-text">${item.label}</span>
-        </div>
-      `;
-    }
-
-    return `
+  const legendHTML = `
+    ${CLOUD_CATEGORIES.map(option => `
       <div class="legend-item">
-        <span class="legend-box no-forecast-box"></span>
-        <span class="legend-text">${item.label}</span>
+        <span class="legend-box ${option === "No Forecast / Not Used" ? "no-forecast-box" : ""}"
+              style="${option !== "No Forecast / Not Used" ? `background:${CLOUD_COLORS[option]}` : ""}">
+        </span>
+        ${option}
       </div>
-    `;
-  }).join("");
+    `).join("")}
+  `;
 
   ["legendDay1", "legendDay2", "legendDay3"].forEach(id => {
     const legend = document.getElementById(id);
-    if (legend) {
-      legend.innerHTML = legendHTML;
-    }
+    if (legend) legend.innerHTML = legendHTML;
   });
 }
 
-/*
-  Updated PDF function:
-  Captures the full container instead of only #pdf-area.
-  This helps prevent left/right crop and map cutting.
-*/
-async function downloadPDF() {
+function downloadPDF() {
   updateIssueTime();
 
-  const pdfTarget = document.querySelector(".container");
+  const element = document.getElementById("pdf-area");
 
-  if (!pdfTarget) {
-    alert("PDF container not found.");
-    return;
-  }
-
-  const button =
-    document.getElementById("downloadBtn") ||
-    document.getElementById("download-btn") ||
-    document.getElementById("download-pdf") ||
-    document.getElementById("downloadPdf");
-
-  try {
-    if (button) {
-      button.disabled = true;
-      button.innerText = "Preparing PDF...";
+  const opt = {
+    margin: [0.1, 0.1, 0.1, 0.1],
+    filename: "Cloud_Forecast_Bulletin.pdf",
+    image: {
+      type: "jpeg",
+      quality: 0.75
+    },
+    html2canvas: {
+      scale: 1,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff",
+      logging: false,
+      scrollY: 0
+    },
+    jsPDF: {
+      unit: "in",
+      format: "a4",
+      orientation: "portrait",
+      compress: true
+    },
+    pagebreak: {
+      mode: ["css", "legacy"],
+      before: [".maps-section", ".weather-section"],
+      avoid: [".map-block", ".map-wrapper"]
     }
+  };
 
-    document.body.classList.add("pdf-export-mode");
-
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-
-    const opt = {
-      margin: [4, 4, 4, 4],
-      filename: "Cloud_Forecast_Bulletin.pdf",
-
-      image: {
-        type: "jpeg",
-        quality: 0.98
-      },
-
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-        scrollX: 0,
-        scrollY: 0,
-        x: 0,
-        y: 0,
-        windowWidth: 794,
-        windowHeight: 1123
-      },
-
-      jsPDF: {
-        unit: "mm",
-        format: "a4",
-        orientation: "portrait",
-        compress: true
-      },
-
-      pagebreak: {
-        mode: ["css", "legacy"],
-        before: [".map-block", ".weather-section"],
-        avoid: [
-          ".map-wrapper",
-          ".cloud-info-table",
-          ".forecast-table",
-          "table",
-          "tr"
-        ]
-      }
-    };
-
-    await html2pdf().set(opt).from(pdfTarget).save();
-
-  } catch (error) {
-    console.error("PDF download failed:", error);
-    alert("PDF download failed. Please check console.");
-  } finally {
-    document.body.classList.remove("pdf-export-mode");
-
-    if (button) {
-      button.disabled = false;
-      button.innerText = "Download PDF";
-    }
-  }
+  html2pdf().set(opt).from(element).save();
 }
 
 window.onload = function() {
