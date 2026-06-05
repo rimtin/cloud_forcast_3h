@@ -460,6 +460,77 @@ body {
     overflow: visible;
   }
 
+  /* =========================================================
+   MAP LEGEND + PDF MAP CUT FIX
+   Add at the very end of cloud-style.css
+========================================================= */
+
+.map-legend {
+  min-width: 165px;
+  max-width: 230px;
+  overflow: visible;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.legend-text {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: inherit;
+  font-weight: 700;
+  color: #000000;
+}
+
+.legend-box,
+.legend-color,
+.legend-hatch {
+  width: 12px;
+  height: 12px;
+  border: 1px solid #555555;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.no-forecast-box {
+  background-image: repeating-linear-gradient(
+    45deg,
+    #ffffff 0,
+    #ffffff 4px,
+    #999999 4px,
+    #999999 6px
+  ) !important;
+}
+
+/* PDF-specific map safety */
+body.pdf-export-mode .map-wrapper {
+  height: 640px !important;
+  overflow: visible !important;
+}
+
+body.pdf-export-mode .map-wrapper svg {
+  height: 100% !important;
+  overflow: visible !important;
+}
+
+body.pdf-export-mode .map-legend {
+  min-width: 165px !important;
+  max-width: 230px !important;
+  overflow: visible !important;
+  z-index: 50 !important;
+}
+
+body.pdf-export-mode .legend-text {
+  display: inline-block !important;
+  white-space: nowrap !important;
+}
+
   .weather-section {
     page-break-before: always;
     break-before: page;
