@@ -268,8 +268,8 @@ async function drawCloudMap(svgId, dayNumber) {
       .reflectY(true)
       .fitExtent(
         [
-          [45, 25],
-          [width - 160, height - 55]
+          [45, 35],
+          [width - 190, height - 95]
         ],
         data
       );
@@ -280,6 +280,7 @@ async function drawCloudMap(svgId, dayNumber) {
       .data(data.features)
       .enter()
       .append("path")
+      .attr("class", "cloud-map-region")
       .attr("d", path)
       .attr("fill", `url(#${patternId})`)
       .attr("stroke", "#333")
@@ -314,15 +315,24 @@ function updateSingleCloudMap(svgId, dayNumber) {
 }
 
 function buildLegend() {
+  const labelMap = {
+    "No Forecast / Not Used": "No Forecast Available"
+  };
+
   const legendHTML = `
-    ${CLOUD_CATEGORIES.map(option => `
-      <div class="legend-item">
-        <span class="legend-box ${option === "No Forecast / Not Used" ? "no-forecast-box" : ""}"
-              style="${option !== "No Forecast / Not Used" ? `background:${CLOUD_COLORS[option]}` : ""}">
-        </span>
-        ${option}
-      </div>
-    `).join("")}
+    ${CLOUD_CATEGORIES.map(option => {
+      const isNoForecast = option === "No Forecast / Not Used";
+      const label = labelMap[option] || option;
+
+      return `
+        <div class="legend-item">
+          <span class="legend-box ${isNoForecast ? "no-forecast-box" : ""}"
+                style="${!isNoForecast ? `background:${CLOUD_COLORS[option]}` : ""}">
+          </span>
+          ${label}
+        </div>
+      `;
+    }).join("")}
   `;
 
   ["legendDay1", "legendDay2", "legendDay3"].forEach(id => {
@@ -344,12 +354,14 @@ function downloadPDF() {
       quality: 0.75
     },
     html2canvas: {
-      scale: 1,
+      scale: 1.35,
       useCORS: true,
       allowTaint: true,
       backgroundColor: "#ffffff",
       logging: false,
-      scrollY: 0
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: 980
     },
     jsPDF: {
       unit: "in",
@@ -359,8 +371,8 @@ function downloadPDF() {
     },
     pagebreak: {
       mode: ["css", "legacy"],
-      before: [".maps-section", ".weather-section"],
-      avoid: [".map-block", ".map-wrapper"]
+      before: [".maps-section", ".weather-section", ".map-block.page-break-map"],
+      avoid: [".map-block", ".map-wrapper", "svg"]
     }
   };
 
