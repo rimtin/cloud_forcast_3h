@@ -6,7 +6,7 @@
 
   <title>3-Hourly Cloud Forecast Bulletin</title>
 
-  <link rel="stylesheet" href="cloud-style.css" />
+  <link rel="stylesheet" href="style.css" />
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://unpkg.com/topojson-client@3"></script>
@@ -14,142 +14,134 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="site-shell">
 
-    <div id="pdf-area">
+    <div class="container">
+      <div id="pdf-area">
 
-      <!-- PAGE 1: TITLE + CLASSIFICATION + FORECAST TABLE -->
-      <section class="pdf-section first-section">
+        <!-- PAGE 1: TABLE -->
+        <section class="page page-1">
+          <h1 class="center-title">3-Hourly Cloud Forecast Bulletin</h1>
+          <h2 id="forecast-date" class="center-date">—</h2>
 
-        <h1 class="center-title">3-Hourly Cloud Forecast Bulletin</h1>
+          <div class="cloud-cover-reference">
+            <h3>Cloud Coverage Classification</h3>
 
-        <h3 id="issue-date" class="issue-time"></h3>
-        <h3 id="issue-clock" class="issue-clock"></h3>
+            <table class="cloud-info-table">
+              <thead>
+                <tr>
+                  <th>S. No.</th>
+                  <th>Cloud Category</th>
+                  <th>Cloud Coverage</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
 
-        <h3 class="table-title">Cloud Coverage Classification</h3>
+              <tbody>
+                <tr class="swatch-clear">
+                  <td>1</td>
+                  <td>Clear Sky</td>
+                  <td>0% - 10%</td>
+                  <td>Mostly clear sky with very low cloud presence.</td>
+                </tr>
 
-        <table class="cloud-info-table">
-          <thead>
-            <tr>
-              <th>S. No.</th>
-              <th>Cloud Category</th>
-              <th>Cloud Coverage</th>
-              <th>Description</th>
-            </tr>
-          </thead>
+                <tr class="swatch-low">
+                  <td>2</td>
+                  <td>Low Cloud Coverage</td>
+                  <td>11% - 30%</td>
+                  <td>Few clouds with minor impact on solar radiation.</td>
+                </tr>
 
-          <tbody>
-            <tr class="cloud-clear-row">
-              <td>1</td>
-              <td>Clear Sky</td>
-              <td>0% - 10%</td>
-              <td>Mostly clear sky with very low cloud presence.</td>
-            </tr>
+                <tr class="swatch-medium">
+                  <td>3</td>
+                  <td>Medium Cloud Coverage</td>
+                  <td>31% - 60%</td>
+                  <td>Partly cloudy conditions with moderate impact on GHI.</td>
+                </tr>
 
-            <tr class="cloud-low-row">
-              <td>2</td>
-              <td>Low Cloud Coverage</td>
-              <td>11% - 30%</td>
-              <td>Few clouds with minor impact on solar radiation.</td>
-            </tr>
+                <tr class="swatch-high">
+                  <td>4</td>
+                  <td>High Cloud Coverage</td>
+                  <td>61% - 85%</td>
+                  <td>Mostly cloudy conditions with significant GHI reduction.</td>
+                </tr>
 
-            <tr class="cloud-medium-row">
-              <td>3</td>
-              <td>Medium Cloud Coverage</td>
-              <td>31% - 60%</td>
-              <td>Partly cloudy conditions with moderate impact on GHI.</td>
-            </tr>
+                <tr class="swatch-overcast">
+                  <td>5</td>
+                  <td>Overcast</td>
+                  <td>86% - 100%</td>
+                  <td>Dense cloud cover with high impact on solar generation.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-            <tr class="cloud-high-row">
-              <td>4</td>
-              <td>High Cloud Coverage</td>
-              <td>61% - 85%</td>
-              <td>Mostly cloudy conditions with significant GHI reduction.</td>
-            </tr>
+          <h3 class="table-title">Cloud Forecast</h3>
 
-            <tr class="cloud-overcast-row">
-              <td>5</td>
-              <td>Overcast</td>
-              <td>86% - 100%</td>
-              <td>Dense cloud cover with high impact on solar generation.</td>
-            </tr>
-          </tbody>
-        </table>
+          <table class="forecast-table">
+            <thead>
+              <tr>
+                <th>State</th>
+                <th>Geographical Area</th>
+                <th>Day 1</th>
+                <th>Day 2</th>
+                <th>Day 3</th>
+              </tr>
+            </thead>
 
-        <h3 class="table-title">Cloud Forecast</h3>
+            <tbody id="forecast-table-body"></tbody>
+          </table>
+        </section>
 
-        <table class="forecast-table">
-          <thead>
-            <tr>
-              <th>State</th>
-              <th>Districts / Geographical Area</th>
-              <th>
-                <input type="text" value="1st hr" class="day-header-input">
-              </th>
-              <th>
-                <input type="text" value="2nd hr" class="day-header-input">
-              </th>
-              <th>
-                <input type="text" value="3rd hr" class="day-header-input">
-              </th>
-            </tr>
-          </thead>
-
-          <tbody id="cloud-table-body"></tbody>
-        </table>
-
-      </section>
-
-      <!-- MAPS SECTION -->
-      <section class="pdf-section maps-section">
-
-        <div class="map-block">
+        <!-- PAGE 2: MAP 1 -->
+        <section class="page page-2">
           <h3 class="map-label">Cloud Forecast Map Hr-1</h3>
 
           <div class="map-wrapper">
-            <svg id="cloudMapDay1"></svg>
-            <div class="map-legend" id="legendDay1"></div>
+            <svg id="indiaMapDay1" viewBox="0 0 860 620" preserveAspectRatio="xMidYMid meet"></svg>
+            <div class="map-legend"></div>
           </div>
-        </div>
+        </section>
 
-        <div class="map-block">
+        <!-- PAGE 3: MAP 2 -->
+        <section class="page page-3">
           <h3 class="map-label">Cloud Forecast Map Hr-2</h3>
 
           <div class="map-wrapper">
-            <svg id="cloudMapDay2"></svg>
-            <div class="map-legend" id="legendDay2"></div>
+            <svg id="indiaMapDay2" viewBox="0 0 860 620" preserveAspectRatio="xMidYMid meet"></svg>
+            <div class="map-legend"></div>
           </div>
-        </div>
+        </section>
 
-        <div class="map-block">
+        <!-- PAGE 4: MAP 3 -->
+        <section class="page page-4">
           <h3 class="map-label">Cloud Forecast Map Hr-3</h3>
 
           <div class="map-wrapper">
-            <svg id="cloudMapDay3"></svg>
-            <div class="map-legend" id="legendDay3"></div>
+            <svg id="indiaMapDay3" viewBox="0 0 860 620" preserveAspectRatio="xMidYMid meet"></svg>
+            <div class="map-legend"></div>
           </div>
-        </div>
+        </section>
 
-      </section>
+        <!-- PAGE 5: NOTES -->
+        <section class="page page-5">
+          <h3 class="table-title">Weather System</h3>
 
-      <!-- WEATHER SYSTEM SECTION -->
-      <section class="pdf-section weather-section">
-
-        <h3 class="table-title">Weather System</h3>
-
-        <div class="bulletin-text" contenteditable="true">
+          <div id="bulletinInputEnd" class="bulletin-text editable-text" contenteditable="true">
 Add cloud-related weather system notes here...
-        </div>
+          </div>
+        </section>
 
-      </section>
-
+      </div>
     </div>
 
-        <button id="downloadBtn" type="button" onclick="downloadPDF()">Download PDF</button>
+    <div class="download-page">
+      <button id="downloadBtn" type="button" onclick="downloadPDF()">Download PDF</button>
+    </div>
 
   </div>
 
-  <script src="cloud-data.js"></script>
-  <script src="cloud-app.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
