@@ -1,77 +1,75 @@
-/* =========================================================
-   CLOUD BULLETIN - WIND BULLETIN MATCHING LAYOUT
-   Replace full cloud-style.css with this file
-========================================================= */
-
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html,
 body {
-  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
   color: #000000;
   font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
 }
 
-body {
-  display: flex;
-  justify-content: center;
-}
-
 .container {
-  background: #ffffff;
-  padding: 20px;
-  max-width: 794px;
   width: 100%;
-  margin: 20px auto;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-  overflow-x: hidden;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 10px;
+  background: #ffffff;
 }
 
 #pdf-area {
   width: 100%;
-  max-width: 754px;
-  margin: 0 auto;
+  max-width: 950px;
   background: #ffffff;
-  overflow: visible;
+  padding: 0;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 .pdf-section {
   width: 100%;
   background: #ffffff;
-  overflow: visible;
+  margin: 0 0 12px 0;
+  padding: 0;
 }
 
-/* HEADINGS */
+.first-section {
+  page-break-before: auto;
+  break-before: auto;
+}
+
 .center-title {
-  font-size: 24px;
   text-align: center;
+  font-size: 24px;
   font-weight: 800;
-  margin-bottom: 8px;
+  margin: 3px 0 10px 0;
   line-height: 1.1;
 }
 
-.issue-time,
-.issue-clock {
-  font-size: 13px;
+.issue-time {
+  font-size: 17px;
   font-weight: 800;
+  margin: 3px 0 4px 0;
   text-align: left;
-  margin: 2px 0 5px 0;
+  color: #000000;
 }
 
 .issue-clock {
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  text-align: left;
   color: #8b0015;
 }
 
 .table-title {
-  text-align: left;
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 800;
   margin: 10px 0 6px 0;
+  line-height: 1.1;
 }
 
 /* TABLES */
@@ -81,26 +79,26 @@ body {
   border-collapse: collapse;
   table-layout: fixed;
   margin: 0 0 10px 0;
-  border: 1.5px solid #222222;
+  border: 2px solid #222222;
 }
 
 .cloud-info-table th,
 .cloud-info-table td,
 .forecast-table th,
 .forecast-table td {
-  border: 1.5px solid #222222;
+  border: 2px solid #222222;
   padding: 3px 4px;
   text-align: center;
   vertical-align: middle;
-  font-size: 8.5px;
-  font-weight: 800;
+  font-size: 10px;
+  font-weight: 700;
   line-height: 1.05;
 }
 
 .cloud-info-table th,
 .forecast-table th {
   background: #d9d9d9;
-  font-weight: 900;
+  font-weight: 800;
 }
 
 /* CLASSIFICATION TABLE WIDTHS */
@@ -111,7 +109,7 @@ body {
 
 .cloud-info-table th:nth-child(2),
 .cloud-info-table td:nth-child(2) {
-  width: 25%;
+  width: 27%;
 }
 
 .cloud-info-table th:nth-child(3),
@@ -121,7 +119,7 @@ body {
 
 .cloud-info-table th:nth-child(4),
 .cloud-info-table td:nth-child(4) {
-  width: 49%;
+  width: 47%;
 }
 
 /* FORECAST TABLE WIDTHS */
@@ -132,7 +130,7 @@ body {
 
 .forecast-table th:nth-child(2),
 .forecast-table td:nth-child(2) {
-  width: 22%;
+  width: 24%;
 }
 
 .forecast-table th:nth-child(3),
@@ -141,7 +139,7 @@ body {
 .forecast-table td:nth-child(3),
 .forecast-table td:nth-child(4),
 .forecast-table td:nth-child(5) {
-  width: 23.66%;
+  width: 23%;
 }
 
 /* CLASSIFICATION COLORS */
@@ -170,13 +168,13 @@ body {
   color: #ffffff;
 }
 
-/* INPUTS */
+/* HEADER INPUTS */
 .day-header-input {
   width: 100%;
-  height: 18px;
+  height: 20px;
   border: 1px solid #777777;
-  padding: 1px 4px;
-  font-size: 9px;
+  padding: 2px 5px;
+  font-size: 11px;
   font-weight: 700;
   background: #ffffff;
   color: #000000;
@@ -187,12 +185,12 @@ body {
 .forecast-select,
 #cloud-table-body select {
   width: 100%;
-  height: 18px;
-  min-height: 18px;
+  height: 21px;
+  min-height: 21px;
   border: 1px solid #ffffff;
-  padding: 1px 14px 1px 4px;
-  font-size: 8.5px;
-  font-weight: 900;
+  padding: 2px 18px 2px 5px;
+  font-size: 10px;
+  font-weight: 800;
   text-align: left;
   outline: none;
   cursor: pointer;
@@ -202,16 +200,16 @@ body {
 }
 
 .state-cell {
-  font-weight: 900;
-  background: #ffffff;
-}
-
-.area-cell {
   font-weight: 800;
   background: #ffffff;
 }
 
-/* MAPS - MATCH WIND FLOW */
+.area-cell {
+  font-weight: 700;
+  background: #ffffff;
+}
+
+/* MAP SECTION */
 .maps-section {
   page-break-before: always;
   break-before: page;
@@ -219,29 +217,28 @@ body {
 
 .map-block {
   width: 100%;
-  margin: 0 0 10px 0;
   page-break-inside: avoid;
   break-inside: avoid;
+  margin-bottom: 12px;
 }
 
 .map-label {
   text-align: center;
-  font-weight: 900;
-  font-size: 14px;
-  margin: 8px 0 6px 0;
+  font-size: 16px;
+  font-weight: 800;
+  margin: 6px 0 4px 0;
+  line-height: 1.1;
 }
 
 .map-wrapper {
   width: 100%;
-  max-width: 720px;
-  height: 520px;
-  margin: 0 auto 8px auto;
+  height: 420px;
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
   position: relative;
-  page-break-inside: avoid;
-  break-inside: avoid;
+  margin: 0 0 10px 0;
   background: #ffffff;
-  border: 1px solid #cccccc;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .map-wrapper svg {
@@ -249,30 +246,28 @@ body {
   height: 100%;
   display: block;
   background: #ffffff;
-  overflow: hidden;
+  overflow: visible;
 }
 
-/* LEGEND */
 .map-legend {
   position: absolute;
   top: 12px;
-  right: 12px;
+  right: 10px;
   background: #ffffff;
   border: 1px solid #cccccc;
-  padding: 7px 10px;
-  font-size: 9px;
-  font-weight: 800;
-  border-radius: 5px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-  width: fit-content;
-  z-index: 10;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 9.5px;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  z-index: 5;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   white-space: nowrap;
 }
 
@@ -301,50 +296,94 @@ body {
 .weather-section {
   page-break-before: always;
   break-before: page;
-  padding-top: 20px;
 }
 
 .bulletin-text {
   width: 100%;
-  min-height: 170px;
-  border: 1px solid #cccccc;
+  min-height: 190px;
+  border: 1px solid #d0d0d0;
   padding: 12px;
-  margin: 10px auto;
-  border-radius: 6px;
-  text-align: left;
   font-size: 16px;
   line-height: 1.5;
+  outline: none;
   white-space: pre-wrap;
   overflow-wrap: break-word;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 
-#downloadBtn,
 #download-btn {
   display: block;
-  margin: 30px auto 10px;
-  padding: 10px 20px;
-  font-size: 14px;
-  background: #007bff;
-  border: none;
+  margin: 20px auto;
+  padding: 12px 30px;
+  background: #222222;
   color: #ffffff;
-  border-radius: 6px;
+  border: none;
+  border-radius: 5px;
+  font-size: 17px;
+  font-weight: 800;
   cursor: pointer;
 }
 
-#downloadBtn:hover,
 #download-btn:hover {
-  background: #0056b3;
+  background: #444444;
 }
 
-/* PRINT */
-@media print {
-  @page {
-    size: A4 portrait;
-    margin: 6mm;
+/* MOBILE */
+@media screen and (max-width: 920px) {
+  .container {
+    max-width: 100%;
+    padding: 8px;
   }
 
+  #pdf-area {
+    max-width: 100%;
+  }
+
+  .center-title {
+    font-size: 22px;
+  }
+
+  .issue-time,
+  .issue-clock {
+    font-size: 15px;
+  }
+
+  .table-title {
+    font-size: 17px;
+  }
+
+  .cloud-info-table th,
+  .cloud-info-table td,
+  .forecast-table th,
+  .forecast-table td {
+    font-size: 9px;
+    padding: 3px;
+  }
+
+  .forecast-table select,
+  .forecast-select,
+  #cloud-table-body select {
+    height: 21px;
+    min-height: 21px;
+    font-size: 9px;
+  }
+
+  .day-header-input {
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .map-wrapper {
+    height: 360px;
+  }
+
+  .map-legend {
+    font-size: 8.5px;
+    padding: 5px 7px;
+  }
+}
+
+/* PRINT / PDF */
+@media print {
   html,
   body {
     width: 210mm;
@@ -354,59 +393,45 @@ body {
     overflow: hidden;
   }
 
-  body {
-    display: block;
-  }
-
   .container {
-    width: 198mm;
-    max-width: 198mm;
+    width: 210mm;
+    max-width: 210mm;
+    padding: 5mm;
     margin: 0 auto;
-    padding: 0;
-    box-shadow: none;
-    overflow: visible;
   }
 
   #pdf-area {
     width: 100%;
-    max-width: 186mm;
+    max-width: 100%;
     margin: 0 auto;
-    overflow: visible;
+    padding: 0;
+    overflow: hidden;
   }
 
-  #downloadBtn,
   #download-btn {
-    display: none !important;
+    display: none;
   }
 
   .center-title {
-    font-size: 22px;
-    margin-bottom: 6px;
+    font-size: 23px;
+  }
+
+  .issue-time {
+    font-size: 16px;
+  }
+
+  .issue-clock {
+    font-size: 15px;
   }
 
   .table-title {
-    font-size: 16px;
-    margin: 8px 0 5px 0;
+    font-size: 18px;
   }
 
-  .cloud-info-table th,
-  .cloud-info-table td,
-  .forecast-table th,
-  .forecast-table td {
-    font-size: 7.8px;
-    padding: 2.2px 3px;
-  }
-
-  .forecast-table select,
-  #cloud-table-body select {
-    height: 17px;
-    min-height: 17px;
-    font-size: 7.8px;
-  }
-
-  .day-header-input {
-    height: 17px;
-    font-size: 8px;
+  .cloud-info-table,
+  .forecast-table {
+    page-break-inside: auto;
+    break-inside: auto;
   }
 
   tr {
@@ -425,93 +450,18 @@ body {
   }
 
   .map-wrapper {
-    height: 123mm;
-    max-width: 186mm;
-    overflow: hidden;
+    height: 420px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    overflow: visible;
+  }
+
+  .map-wrapper svg {
+    overflow: visible;
   }
 
   .weather-section {
     page-break-before: always;
     break-before: page;
   }
-}
-/* ===== PDF EMERGENCY FIX ===== */
-
-.pdf-export-mode {
-  width: 794px !important;
-  max-width: 794px !important;
-  min-width: 794px !important;
-  margin: 0 auto !important;
-  padding: 8px !important;
-  background: #ffffff !important;
-  overflow: visible !important;
-}
-
-.pdf-export-mode .pdf-section {
-  width: 100% !important;
-  max-width: 100% !important;
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-  overflow: visible !important;
-}
-
-.pdf-export-mode .map-row,
-.pdf-export-mode .maps-wrapper,
-.pdf-export-mode .map-container {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: flex-start !important;
-  gap: 8px !important;
-  width: 100% !important;
-  overflow: visible !important;
-}
-
-.pdf-export-mode .map-box {
-  width: 48% !important;
-  max-width: 48% !important;
-  min-height: 360px !important;
-  overflow: visible !important;
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-
-.pdf-export-mode svg {
-  width: 100% !important;
-  height: 330px !important;
-  display: block !important;
-  overflow: visible !important;
-}
-
-.pdf-export-mode table {
-  width: 100% !important;
-  border-collapse: collapse !important;
-  font-size: 9px !important;
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-
-.pdf-export-mode th,
-.pdf-export-mode td {
-  padding: 3px !important;
-  line-height: 1.15 !important;
-}
-
-.pdf-export-mode .center-title {
-  font-size: 20px !important;
-  margin: 2px 0 6px 0 !important;
-}
-
-.pdf-export-mode .center-date,
-.pdf-export-mode .issue-time {
-  font-size: 12px !important;
-  margin: 2px 0 !important;
-}
-
-.pdf-export-mode .legend,
-.pdf-export-mode .color-chart,
-.pdf-export-mode .forecast-legend {
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-  margin-top: 6px !important;
-  margin-bottom: 6px !important;
 }
