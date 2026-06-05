@@ -24,8 +24,6 @@ async function loadCloudGeoJSON() {
 
       if (data && data.features && data.features.length > 0) {
         console.log("Cloud GeoJSON loaded from:", url);
-        console.log("First feature properties:", data.features[0].properties);
-
         cachedCloudGeoJSON = data;
         return data;
       }
@@ -35,36 +33,6 @@ async function loadCloudGeoJSON() {
   }
 
   throw new Error("No Cloud GeoJSON source could be loaded.");
-}
-
-function updateForecastDate() {
-  const dateEl = document.getElementById("issue-date");
-  if (!dateEl) return;
-
-  const today = new Date();
-
-  const formattedDate = today.toLocaleDateString("en-CA", {
-    timeZone: "Asia/Kolkata",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  });
-
-  dateEl.textContent = `Forecast Issued: ${formattedDate}`;
-}
-
-function updateIssueTime() {
-  const issueEl = document.getElementById("issue-clock");
-  if (!issueEl) return;
-
-  const time = new Date().toLocaleTimeString("en-IN", {
-    timeZone: "Asia/Kolkata",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true
-  });
-
-  issueEl.textContent = `Time of Issue: ${time} IST`;
 }
 
 function createCloudDropdown(selectedValue = "Clear Sky") {
@@ -116,7 +84,7 @@ function applyCloudDropdownColor(select) {
   const color = CLOUD_COLORS[select.value] || "#ffffff";
 
   select.style.backgroundColor = color;
-  select.style.fontWeight = "700";
+  select.style.fontWeight = "900";
 
   if (
     select.value === "Low Cloud Coverage" ||
@@ -244,15 +212,15 @@ function addNoForecastPattern(svg, patternId) {
     .attr("x2", 0)
     .attr("y2", 10)
     .attr("stroke", "#777777")
-    .attr("stroke-width", 1.4);
+    .attr("stroke-width", 1.3);
 }
 
 async function drawCloudMap(svgId, dayNumber) {
   const svg = d3.select(svgId);
   svg.selectAll("*").remove();
 
-  const width = 760;
-  const height = 640;
+  const width = 900;
+  const height = 430;
   const patternId = `noForecastPatternCloudDay${dayNumber}`;
 
   svg
@@ -268,8 +236,8 @@ async function drawCloudMap(svgId, dayNumber) {
       .reflectY(true)
       .fitExtent(
         [
-          [35, 35],
-          [width - 135, height - 90]
+          [90, 20],
+          [width - 210, height - 25]
         ],
         data
       );
@@ -284,7 +252,7 @@ async function drawCloudMap(svgId, dayNumber) {
       .attr("d", path)
       .attr("fill", `url(#${patternId})`)
       .attr("stroke", "#333333")
-      .attr("stroke-width", 0.6)
+      .attr("stroke-width", 0.65)
       .attr("data-geo-name", d => getGeoNameFromFeature(d));
 
     updateCloudMapColors();
@@ -348,34 +316,24 @@ function buildLegend() {
 }
 
 function downloadPDF() {
-  updateIssueTime();
-
   const element = document.getElementById("pdf-area");
 
-  const originalWidth = element.style.width;
-  const originalMaxWidth = element.style.maxWidth;
-  const originalPadding = element.style.padding;
-
-  element.style.width = "780px";
-  element.style.maxWidth = "780px";
-  element.style.padding = "8px";
-
   const opt = {
-    margin: [0.12, 0.12, 0.12, 0.12],
+    margin: 0.2,
     filename: "Cloud_Forecast_Bulletin.pdf",
     image: {
       type: "jpeg",
-      quality: 0.86
+      quality: 0.98
     },
     html2canvas: {
-      scale: 1.25,
+      scale: 2,
       useCORS: true,
       allowTaint: true,
       backgroundColor: "#ffffff",
       logging: false,
       scrollX: 0,
       scrollY: 0,
-      windowWidth: 820
+      windowWidth: 980
     },
     jsPDF: {
       unit: "in",
@@ -385,25 +343,15 @@ function downloadPDF() {
     },
     pagebreak: {
       mode: ["css", "legacy"],
-      before: [".map-page", ".weather-section"],
-      avoid: [".map-wrapper", "svg", "tr"]
+      before: [".maps-section", ".weather-section"],
+      avoid: [".map-block", ".map-wrapper", "tr"]
     }
   };
 
-  html2pdf()
-    .set(opt)
-    .from(element)
-    .save()
-    .then(() => {
-      element.style.width = originalWidth;
-      element.style.maxWidth = originalMaxWidth;
-      element.style.padding = originalPadding;
-    });
+  html2pdf().set(opt).from(element).save();
 }
 
 window.onload = function() {
-  updateForecastDate();
-  updateIssueTime();
   buildCloudTable();
   buildLegend();
 
