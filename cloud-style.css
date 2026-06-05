@@ -435,3 +435,83 @@ body {
     break-before: page;
   }
 }
+/* ===== PDF EMERGENCY FIX ===== */
+
+.pdf-export-mode {
+  width: 794px !important;
+  max-width: 794px !important;
+  min-width: 794px !important;
+  margin: 0 auto !important;
+  padding: 8px !important;
+  background: #ffffff !important;
+  overflow: visible !important;
+}
+
+.pdf-export-mode .pdf-section {
+  width: 100% !important;
+  max-width: 100% !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  overflow: visible !important;
+}
+
+.pdf-export-mode .map-row,
+.pdf-export-mode .maps-wrapper,
+.pdf-export-mode .map-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+.pdf-export-mode .map-box {
+  width: 48% !important;
+  max-width: 48% !important;
+  min-height: 360px !important;
+  overflow: visible !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+.pdf-export-mode svg {
+  width: 100% !important;
+  height: 330px !important;
+  display: block !important;
+  overflow: visible !important;
+}
+
+.pdf-export-mode table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 9px !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+.pdf-export-mode th,
+.pdf-export-mode td {
+  padding: 3px !important;
+  line-height: 1.15 !important;
+}
+
+.pdf-export-mode .center-title {
+  font-size: 20px !important;
+  margin: 2px 0 6px 0 !important;
+}
+
+.pdf-export-mode .center-date,
+.pdf-export-mode .issue-time {
+  font-size: 12px !important;
+  margin: 2px 0 !important;
+}
+
+.pdf-export-mode .legend,
+.pdf-export-mode .color-chart,
+.pdf-export-mode .forecast-legend {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  margin-top: 6px !important;
+  margin-bottom: 6px !important;
+}
