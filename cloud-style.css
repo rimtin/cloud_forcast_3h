@@ -1,77 +1,77 @@
+/* =========================================================
+   CLOUD BULLETIN - WIND BULLETIN MATCHING LAYOUT
+   Replace full cloud-style.css with this file
+========================================================= */
+
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html,
 body {
-  margin: 0;
-  padding: 0;
-  background: #ffffff;
+  background: #f2f2f2;
   color: #000000;
   font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
 }
 
+body {
+  display: flex;
+  justify-content: center;
+}
+
 .container {
-  width: 100%;
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 10px;
   background: #ffffff;
+  padding: 20px;
+  max-width: 794px;
+  width: 100%;
+  margin: 20px auto;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
 }
 
 #pdf-area {
   width: 100%;
-  max-width: 940px;
+  max-width: 754px;
   margin: 0 auto;
-  padding: 0;
   background: #ffffff;
   overflow: visible;
 }
 
 .pdf-section {
   width: 100%;
-  margin: 0;
-  padding: 0;
   background: #ffffff;
   overflow: visible;
 }
 
+/* HEADINGS */
 .center-title {
+  font-size: 24px;
   text-align: center;
-  font-size: 27px;
-  font-weight: 900;
-  margin: 8px 0 14px 0;
+  font-weight: 800;
+  margin-bottom: 8px;
   line-height: 1.1;
 }
 
-.issue-row {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  margin: 0 0 12px 0;
-  font-size: 20px;
-  font-weight: 900;
+.issue-time,
+.issue-clock {
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+  margin: 2px 0 5px 0;
 }
 
-.issue-label {
-  margin-right: 5px;
-}
-
-.issue-input {
-  width: 210px;
-  height: 20px;
-  border: 1px solid #777777;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 2px 4px;
+.issue-clock {
+  color: #8b0015;
 }
 
 .table-title {
-  font-size: 21px;
-  font-weight: 900;
-  margin: 12px 0 8px 0;
-  line-height: 1.1;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 800;
+  margin: 10px 0 6px 0;
 }
 
 /* TABLES */
@@ -80,21 +80,21 @@ body {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  margin: 0 0 16px 0;
-  border: 2px solid #222222;
+  margin: 0 0 10px 0;
+  border: 1.5px solid #222222;
 }
 
 .cloud-info-table th,
 .cloud-info-table td,
 .forecast-table th,
 .forecast-table td {
-  border: 2px solid #222222;
-  padding: 5px 6px;
+  border: 1.5px solid #222222;
+  padding: 3px 4px;
   text-align: center;
   vertical-align: middle;
-  font-size: 12px;
+  font-size: 8.5px;
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.05;
 }
 
 .cloud-info-table th,
@@ -132,7 +132,7 @@ body {
 
 .forecast-table th:nth-child(2),
 .forecast-table td:nth-child(2) {
-  width: 21%;
+  width: 22%;
 }
 
 .forecast-table th:nth-child(3),
@@ -141,7 +141,7 @@ body {
 .forecast-table td:nth-child(3),
 .forecast-table td:nth-child(4),
 .forecast-table td:nth-child(5) {
-  width: 24%;
+  width: 23.66%;
 }
 
 /* CLASSIFICATION COLORS */
@@ -170,13 +170,13 @@ body {
   color: #ffffff;
 }
 
-/* HEADER INPUTS */
+/* INPUTS */
 .day-header-input {
   width: 100%;
-  height: 22px;
+  height: 18px;
   border: 1px solid #777777;
-  padding: 2px 5px;
-  font-size: 13px;
+  padding: 1px 4px;
+  font-size: 9px;
   font-weight: 700;
   background: #ffffff;
   color: #000000;
@@ -187,11 +187,11 @@ body {
 .forecast-select,
 #cloud-table-body select {
   width: 100%;
-  height: 26px;
-  min-height: 26px;
+  height: 18px;
+  min-height: 18px;
   border: 1px solid #ffffff;
-  padding: 2px 18px 2px 5px;
-  font-size: 12px;
+  padding: 1px 14px 1px 4px;
+  font-size: 8.5px;
   font-weight: 900;
   text-align: left;
   outline: none;
@@ -211,7 +211,7 @@ body {
   background: #ffffff;
 }
 
-/* MAPS - WIND BULLETIN STYLE */
+/* MAPS - MATCH WIND FLOW */
 .maps-section {
   page-break-before: always;
   break-before: page;
@@ -220,30 +220,28 @@ body {
 .map-block {
   width: 100%;
   margin: 0 0 10px 0;
-  padding: 0;
-  background: #ffffff;
   page-break-inside: avoid;
   break-inside: avoid;
 }
 
 .map-label {
   text-align: center;
-  font-size: 18px;
   font-weight: 900;
+  font-size: 14px;
   margin: 8px 0 6px 0;
-  line-height: 1.1;
 }
 
 .map-wrapper {
   width: 100%;
-  height: 425px;
-  border: 1px solid #d0d0d0;
+  max-width: 720px;
+  height: 520px;
+  margin: 0 auto 8px auto;
   position: relative;
-  margin: 0 auto 10px auto;
-  background: #ffffff;
-  overflow: hidden;
   page-break-inside: avoid;
   break-inside: avoid;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  overflow: hidden;
 }
 
 .map-wrapper svg {
@@ -254,17 +252,19 @@ body {
   overflow: hidden;
 }
 
+/* LEGEND */
 .map-legend {
   position: absolute;
   top: 12px;
-  right: 10px;
+  right: 12px;
   background: #ffffff;
   border: 1px solid #cccccc;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 9.5px;
+  padding: 7px 10px;
+  font-size: 9px;
   font-weight: 800;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  border-radius: 5px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  width: fit-content;
   z-index: 10;
 }
 
@@ -272,11 +272,13 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   white-space: nowrap;
 }
 
-.legend-box {
+.legend-box,
+.legend-color,
+.legend-hatch {
   width: 12px;
   height: 12px;
   border: 1px solid #555555;
@@ -284,7 +286,8 @@ body {
   flex-shrink: 0;
 }
 
-.no-forecast-box {
+.no-forecast-box,
+.legend-hatch {
   background-image: repeating-linear-gradient(
     45deg,
     #ffffff 0,
@@ -298,48 +301,44 @@ body {
 .weather-section {
   page-break-before: always;
   break-before: page;
-  padding-top: 26px;
-}
-
-.weather-title {
-  font-size: 30px;
-  font-weight: 900;
-  margin: 0 0 18px 0;
+  padding-top: 20px;
 }
 
 .bulletin-text {
   width: 100%;
-  min-height: 180px;
-  border: 1px solid #d0d0d0;
+  min-height: 170px;
+  border: 1px solid #cccccc;
+  padding: 12px;
+  margin: 10px auto;
   border-radius: 6px;
-  padding: 16px;
-  font-size: 20px;
+  text-align: left;
+  font-size: 16px;
   line-height: 1.5;
-  outline: none;
   white-space: pre-wrap;
   overflow-wrap: break-word;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 #downloadBtn,
 #download-btn {
   display: block;
-  margin: 20px auto;
-  padding: 12px 30px;
-  background: #222222;
-  color: #ffffff;
+  margin: 30px auto 10px;
+  padding: 10px 20px;
+  font-size: 14px;
+  background: #007bff;
   border: none;
-  border-radius: 5px;
-  font-size: 17px;
-  font-weight: 900;
+  color: #ffffff;
+  border-radius: 6px;
   cursor: pointer;
 }
 
 #downloadBtn:hover,
 #download-btn:hover {
-  background: #444444;
+  background: #0056b3;
 }
 
-/* PRINT / PDF */
+/* PRINT */
 @media print {
   @page {
     size: A4 portrait;
@@ -355,20 +354,23 @@ body {
     overflow: hidden;
   }
 
+  body {
+    display: block;
+  }
+
   .container {
     width: 198mm;
     max-width: 198mm;
     margin: 0 auto;
     padding: 0;
-    background: #ffffff;
+    box-shadow: none;
+    overflow: visible;
   }
 
   #pdf-area {
-    width: 198mm;
-    max-width: 198mm;
+    width: 100%;
+    max-width: 186mm;
     margin: 0 auto;
-    padding: 0;
-    background: #ffffff;
     overflow: visible;
   }
 
@@ -378,26 +380,33 @@ body {
   }
 
   .center-title {
-    font-size: 26px;
+    font-size: 22px;
+    margin-bottom: 6px;
   }
 
   .table-title {
-    font-size: 20px;
+    font-size: 16px;
+    margin: 8px 0 5px 0;
   }
 
   .cloud-info-table th,
   .cloud-info-table td,
   .forecast-table th,
   .forecast-table td {
-    font-size: 11px;
-    padding: 4px 5px;
+    font-size: 7.8px;
+    padding: 2.2px 3px;
   }
 
   .forecast-table select,
   #cloud-table-body select {
-    font-size: 11px;
-    height: 25px;
-    min-height: 25px;
+    height: 17px;
+    min-height: 17px;
+    font-size: 7.8px;
+  }
+
+  .day-header-input {
+    height: 17px;
+    font-size: 8px;
   }
 
   tr {
@@ -416,7 +425,8 @@ body {
   }
 
   .map-wrapper {
-    height: 105mm;
+    height: 123mm;
+    max-width: 186mm;
     overflow: hidden;
   }
 
