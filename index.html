@@ -18,15 +18,13 @@
 
     <div id="pdf-area">
 
-      <!-- PAGE 1: TABLES -->
+      <!-- PAGE 1: TITLE + CLASSIFICATION + FORECAST TABLE -->
       <section class="pdf-section first-section">
 
         <h1 class="center-title">3-Hourly Cloud Forecast Bulletin</h1>
 
-        <div class="issue-row">
-          <span class="issue-label">Forecast Issued:</span>
-          <input id="issue-date-input" class="issue-input" type="text" placeholder="Enter issue date and time" />
-        </div>
+        <h3 id="issue-date" class="issue-time"></h3>
+        <h3 id="issue-clock" class="issue-clock"></h3>
 
         <h3 class="table-title">Cloud Coverage Classification</h3>
 
@@ -84,7 +82,7 @@
           <thead>
             <tr>
               <th>State</th>
-              <th>Geographical Area</th>
+              <th>Districts / Geographical Area</th>
               <th>
                 <input type="text" value="1st hr" class="day-header-input">
               </th>
@@ -102,11 +100,12 @@
 
       </section>
 
-      <!-- MAPS SECTION: SAME FLOW AS WIND BULLETIN -->
+      <!-- MAPS SECTION -->
       <section class="pdf-section maps-section">
 
         <div class="map-block">
           <h3 class="map-label">Cloud Forecast Map Hr-1</h3>
+
           <div class="map-wrapper">
             <svg id="cloudMapDay1"></svg>
             <div class="map-legend" id="legendDay1"></div>
@@ -115,6 +114,7 @@
 
         <div class="map-block">
           <h3 class="map-label">Cloud Forecast Map Hr-2</h3>
+
           <div class="map-wrapper">
             <svg id="cloudMapDay2"></svg>
             <div class="map-legend" id="legendDay2"></div>
@@ -123,6 +123,7 @@
 
         <div class="map-block">
           <h3 class="map-label">Cloud Forecast Map Hr-3</h3>
+
           <div class="map-wrapper">
             <svg id="cloudMapDay3"></svg>
             <div class="map-legend" id="legendDay3"></div>
@@ -131,10 +132,10 @@
 
       </section>
 
-      <!-- WEATHER SYSTEM -->
+      <!-- WEATHER SYSTEM SECTION -->
       <section class="pdf-section weather-section">
 
-        <h3 class="weather-title">Weather System</h3>
+        <h3 class="table-title">Weather System</h3>
 
         <div class="bulletin-text" contenteditable="true">
 Add cloud-related weather system notes here...
@@ -144,7 +145,7 @@ Add cloud-related weather system notes here...
 
     </div>
 
-    <button id="downloadBtn" type="button" onclick="downloadPDF()">Download PDF</button>
+        <button id="downloadBtn" type="button" onclick="downloadPDF()">Download PDF</button>
 
   </div>
 
