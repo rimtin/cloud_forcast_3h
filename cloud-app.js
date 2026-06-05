@@ -1,29 +1,17 @@
-/* =========================================================
-   CLOUD FORECAST BULLETIN - cloud-app.js
-   Wind Bulletin matching PDF layout version
-   Keep cloud-data.js as it is
-========================================================= */
-
 const CLOUD_GEO_URLS = [
   "indian_met_zones.geojson",
   "./indian_met_zones.geojson",
   "assets/indian_met_zones.geojson",
   "./assets/indian_met_zones.geojson",
-
   "https://rimtin.github.io/cloud_forcast_3h/indian_met_zones.geojson",
   "https://raw.githubusercontent.com/rimtin/cloud_forcast_3h/main/indian_met_zones.geojson",
   "https://cdn.jsdelivr.net/gh/rimtin/cloud_forcast_3h@main/indian_met_zones.geojson",
-
   "https://rimtin.github.io/wind_bulletin/indian_met_zones.geojson",
   "https://raw.githubusercontent.com/rimtin/wind_bulletin/main/indian_met_zones.geojson",
   "https://cdn.jsdelivr.net/gh/rimtin/wind_bulletin@main/indian_met_zones.geojson"
 ];
 
 let cachedCloudGeoJSON = null;
-
-/* =========================================================
-   LOAD GEOJSON
-========================================================= */
 
 async function loadCloudGeoJSON() {
   if (cachedCloudGeoJSON) return cachedCloudGeoJSON;
@@ -49,13 +37,9 @@ async function loadCloudGeoJSON() {
   throw new Error("No Cloud GeoJSON source could be loaded.");
 }
 
-/* =========================================================
-   ISSUE DATE / TIME
-========================================================= */
-
 function updateForecastDate() {
   const dateEl = document.getElementById("issue-date");
-  const dateInput = document.getElementById("issue-date-input");
+  if (!dateEl) return;
 
   const today = new Date();
 
@@ -66,18 +50,11 @@ function updateForecastDate() {
     day: "2-digit"
   });
 
-  if (dateEl) {
-    dateEl.textContent = `Forecast Issued: ${formattedDate}`;
-  }
-
-  if (dateInput && !dateInput.value.trim()) {
-    dateInput.value = formattedDate;
-  }
+  dateEl.textContent = `Forecast Issued: ${formattedDate}`;
 }
 
 function updateIssueTime() {
   const issueEl = document.getElementById("issue-clock");
-
   if (!issueEl) return;
 
   const time = new Date().toLocaleTimeString("en-IN", {
@@ -89,10 +66,6 @@ function updateIssueTime() {
 
   issueEl.textContent = `Time of Issue: ${time} IST`;
 }
-
-/* =========================================================
-   TABLE BUILDING
-========================================================= */
 
 function createCloudDropdown(selectedValue = "Clear Sky") {
   return `
@@ -143,7 +116,7 @@ function applyCloudDropdownColor(select) {
   const color = CLOUD_COLORS[select.value] || "#ffffff";
 
   select.style.backgroundColor = color;
-  select.style.fontWeight = "900";
+  select.style.fontWeight = "700";
 
   if (
     select.value === "Low Cloud Coverage" ||
@@ -154,10 +127,6 @@ function applyCloudDropdownColor(select) {
     select.style.color = "#000000";
   }
 }
-
-/* =========================================================
-   GEOJSON NAME MATCHING
-========================================================= */
 
 const cloudGeoNameMap = {
   "Punjab": "Punjab",
@@ -254,10 +223,6 @@ function getSubdivisionColor(geoName, dayNumber) {
   return null;
 }
 
-/* =========================================================
-   NO FORECAST HATCH PATTERN
-========================================================= */
-
 function addNoForecastPattern(svg, patternId) {
   const defs = svg.append("defs");
 
@@ -278,21 +243,16 @@ function addNoForecastPattern(svg, patternId) {
     .attr("y1", 0)
     .attr("x2", 0)
     .attr("y2", 10)
-    .attr("stroke", "#777777")
-    .attr("stroke-width", 1.3);
+    .attr("stroke", "#777")
+    .attr("stroke-width", 1.4);
 }
-
-/* =========================================================
-   DRAW MAPS
-   This matches Wind Bulletin map size/flow
-========================================================= */
 
 async function drawCloudMap(svgId, dayNumber) {
   const svg = d3.select(svgId);
   svg.selectAll("*").remove();
 
-  const width = 900;
-  const height = 520;
+  const width = 860;
+  const height = 560;
   const patternId = `noForecastPatternCloudDay${dayNumber}`;
 
   svg
@@ -308,8 +268,8 @@ async function drawCloudMap(svgId, dayNumber) {
       .reflectY(true)
       .fitExtent(
         [
-          [80, 25],
-          [width - 170, height - 35]
+          [45, 25],
+          [width - 160, height - 55]
         ],
         data
       );
@@ -320,11 +280,10 @@ async function drawCloudMap(svgId, dayNumber) {
       .data(data.features)
       .enter()
       .append("path")
-      .attr("class", "cloud-map-region")
       .attr("d", path)
       .attr("fill", `url(#${patternId})`)
-      .attr("stroke", "#333333")
-      .attr("stroke-width", 0.65)
+      .attr("stroke", "#333")
+      .attr("stroke-width", 0.6)
       .attr("data-geo-name", d => getGeoNameFromFeature(d));
 
     updateCloudMapColors();
@@ -341,10 +300,6 @@ async function drawCloudMap(svgId, dayNumber) {
   }
 }
 
-/* =========================================================
-   UPDATE MAP COLORS
-========================================================= */
-
 function updateCloudMapColors() {
   updateSingleCloudMap("#cloudMapDay1", 1);
   updateSingleCloudMap("#cloudMapDay2", 2);
@@ -358,35 +313,16 @@ function updateSingleCloudMap(svgId, dayNumber) {
   });
 }
 
-/* =========================================================
-   LEGEND
-========================================================= */
-
 function buildLegend() {
-  const finalCategories = [...CLOUD_CATEGORIES];
-
-  if (!finalCategories.includes("No Forecast / Not Used")) {
-    finalCategories.push("No Forecast / Not Used");
-  }
-
-  const labelMap = {
-    "No Forecast / Not Used": "No Forecast Available"
-  };
-
   const legendHTML = `
-    ${finalCategories.map(option => {
-      const isNoForecast = option === "No Forecast / Not Used";
-      const label = labelMap[option] || option;
-
-      return `
-        <div class="legend-item">
-          <span class="legend-box ${isNoForecast ? "no-forecast-box" : ""}"
-                style="${!isNoForecast ? `background:${CLOUD_COLORS[option] || "#ffffff"}` : ""}">
-          </span>
-          ${label}
-        </div>
-      `;
-    }).join("")}
+    ${CLOUD_CATEGORIES.map(option => `
+      <div class="legend-item">
+        <span class="legend-box ${option === "No Forecast / Not Used" ? "no-forecast-box" : ""}"
+              style="${option !== "No Forecast / Not Used" ? `background:${CLOUD_COLORS[option]}` : ""}">
+        </span>
+        ${option}
+      </div>
+    `).join("")}
   `;
 
   ["legendDay1", "legendDay2", "legendDay3"].forEach(id => {
@@ -395,98 +331,45 @@ function buildLegend() {
   });
 }
 
-/* =========================================================
-   PDF DOWNLOAD
-   Same style approach as Wind Bulletin
-========================================================= */
+function downloadPDF() {
+  updateIssueTime();
 
-async function downloadPDF() {
-  const pdfArea = document.getElementById("pdf-area");
+  const element = document.getElementById("pdf-area");
 
-  if (!pdfArea) {
-    alert("PDF area not found.");
-    return;
-  }
-
-  const button =
-    document.getElementById("download-pdf") ||
-    document.getElementById("downloadPdf") ||
-    document.querySelector("button[onclick='downloadPDF()']");
-
-  try {
-    if (button) {
-      button.disabled = true;
-      button.innerText = "Preparing PDF...";
+  const opt = {
+    margin: [0.1, 0.1, 0.1, 0.1],
+    filename: "Cloud_Forecast_Bulletin.pdf",
+    image: {
+      type: "jpeg",
+      quality: 0.75
+    },
+    html2canvas: {
+      scale: 1,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff",
+      logging: false,
+      scrollY: 0
+    },
+    jsPDF: {
+      unit: "in",
+      format: "a4",
+      orientation: "portrait",
+      compress: true
+    },
+    pagebreak: {
+      mode: ["css", "legacy"],
+      before: [".maps-section", ".weather-section"],
+      avoid: [".map-block", ".map-wrapper"]
     }
+  };
 
-    document.body.classList.add("pdf-capturing");
-    pdfArea.classList.add("pdf-export-mode");
-
-    /*
-      Important:
-      This gives D3 maps, SVGs, tables and fonts time to settle
-      before html2pdf captures the page.
-    */
-    await new Promise((resolve) => setTimeout(resolve, 700));
-
-    const opt = {
-      margin: [4, 4, 4, 4],
-      filename: "Cloud_Forecast_Bulletin.pdf",
-      image: {
-        type: "jpeg",
-        quality: 0.98
-      },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 794
-      },
-      jsPDF: {
-        unit: "mm",
-        format: "a4",
-        orientation: "portrait"
-      },
-      pagebreak: {
-        mode: ["avoid-all", "css", "legacy"],
-        avoid: [
-          ".pdf-section",
-          ".map-box",
-          ".map-container",
-          ".legend",
-          "table",
-          "tr"
-        ]
-      }
-    };
-
-    await html2pdf().set(opt).from(pdfArea).save();
-
-  } catch (error) {
-    console.error("PDF download failed:", error);
-    alert("PDF download failed. Please check console for error.");
-  } finally {
-    pdfArea.classList.remove("pdf-export-mode");
-    document.body.classList.remove("pdf-capturing");
-
-    if (button) {
-      button.disabled = false;
-      button.innerText = "Download PDF";
-    }
-  }
+  html2pdf().set(opt).from(element).save();
 }
-
-/* =========================================================
-   INIT
-========================================================= */
 
 window.onload = function() {
   updateForecastDate();
   updateIssueTime();
-
   buildCloudTable();
   buildLegend();
 
