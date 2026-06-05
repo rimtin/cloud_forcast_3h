@@ -18,13 +18,15 @@
 
     <div id="pdf-area">
 
-      <!-- PAGE 1 -->
+      <!-- PAGE 1: TABLES -->
       <section class="pdf-section first-section">
 
         <h1 class="center-title">3-Hourly Cloud Forecast Bulletin</h1>
 
-        <h3 id="issue-date" class="issue-time"></h3>
-        <h3 id="issue-clock" class="issue-clock"></h3>
+        <div class="issue-row">
+          <span class="issue-label">Forecast Issued:</span>
+          <input id="issue-date-input" class="issue-input" type="text" placeholder="Enter issue date and time" />
+        </div>
 
         <h3 class="table-title">Cloud Coverage Classification</h3>
 
@@ -82,7 +84,7 @@
           <thead>
             <tr>
               <th>State</th>
-              <th>Districts / Geographical Area</th>
+              <th>Geographical Area</th>
               <th>
                 <input type="text" value="1st hr" class="day-header-input">
               </th>
@@ -100,40 +102,39 @@
 
       </section>
 
-      <!-- PAGE 2 -->
-      <section class="pdf-section map-page">
-        <h3 class="map-label">Cloud Forecast Map Hr-1</h3>
+      <!-- MAPS SECTION: SAME FLOW AS WIND BULLETIN -->
+      <section class="pdf-section maps-section">
 
-        <div class="map-wrapper">
-          <svg id="cloudMapDay1"></svg>
-          <div class="map-legend" id="legendDay1"></div>
+        <div class="map-block">
+          <h3 class="map-label">Cloud Forecast Map Hr-1</h3>
+          <div class="map-wrapper">
+            <svg id="cloudMapDay1"></svg>
+            <div class="map-legend" id="legendDay1"></div>
+          </div>
         </div>
+
+        <div class="map-block">
+          <h3 class="map-label">Cloud Forecast Map Hr-2</h3>
+          <div class="map-wrapper">
+            <svg id="cloudMapDay2"></svg>
+            <div class="map-legend" id="legendDay2"></div>
+          </div>
+        </div>
+
+        <div class="map-block">
+          <h3 class="map-label">Cloud Forecast Map Hr-3</h3>
+          <div class="map-wrapper">
+            <svg id="cloudMapDay3"></svg>
+            <div class="map-legend" id="legendDay3"></div>
+          </div>
+        </div>
+
       </section>
 
-      <!-- PAGE 3 -->
-      <section class="pdf-section map-page">
-        <h3 class="map-label">Cloud Forecast Map Hr-2</h3>
-
-        <div class="map-wrapper">
-          <svg id="cloudMapDay2"></svg>
-          <div class="map-legend" id="legendDay2"></div>
-        </div>
-      </section>
-
-      <!-- PAGE 4 -->
-      <section class="pdf-section map-page">
-        <h3 class="map-label">Cloud Forecast Map Hr-3</h3>
-
-        <div class="map-wrapper">
-          <svg id="cloudMapDay3"></svg>
-          <div class="map-legend" id="legendDay3"></div>
-        </div>
-      </section>
-
-      <!-- PAGE 5 -->
+      <!-- WEATHER SYSTEM -->
       <section class="pdf-section weather-section">
 
-        <h3 class="table-title">Weather System</h3>
+        <h3 class="weather-title">Weather System</h3>
 
         <div class="bulletin-text" contenteditable="true">
 Add cloud-related weather system notes here...
