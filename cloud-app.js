@@ -1,17 +1,29 @@
+/* =========================================================
+   CLOUD FORECAST BULLETIN - cloud-app.js
+   Wind Bulletin matching PDF layout version
+   Keep cloud-data.js as it is
+========================================================= */
+
 const CLOUD_GEO_URLS = [
   "indian_met_zones.geojson",
   "./indian_met_zones.geojson",
   "assets/indian_met_zones.geojson",
   "./assets/indian_met_zones.geojson",
+
   "https://rimtin.github.io/cloud_forcast_3h/indian_met_zones.geojson",
   "https://raw.githubusercontent.com/rimtin/cloud_forcast_3h/main/indian_met_zones.geojson",
   "https://cdn.jsdelivr.net/gh/rimtin/cloud_forcast_3h@main/indian_met_zones.geojson",
+
   "https://rimtin.github.io/wind_bulletin/indian_met_zones.geojson",
   "https://raw.githubusercontent.com/rimtin/wind_bulletin/main/indian_met_zones.geojson",
   "https://cdn.jsdelivr.net/gh/rimtin/wind_bulletin@main/indian_met_zones.geojson"
 ];
 
 let cachedCloudGeoJSON = null;
+
+/* =========================================================
+   LOAD GEOJSON
+========================================================= */
 
 async function loadCloudGeoJSON() {
   if (cachedCloudGeoJSON) return cachedCloudGeoJSON;
@@ -24,6 +36,8 @@ async function loadCloudGeoJSON() {
 
       if (data && data.features && data.features.length > 0) {
         console.log("Cloud GeoJSON loaded from:", url);
+        console.log("First feature properties:", data.features[0].properties);
+
         cachedCloudGeoJSON = data;
         return data;
       }
@@ -34,6 +48,51 @@ async function loadCloudGeoJSON() {
 
   throw new Error("No Cloud GeoJSON source could be loaded.");
 }
+
+/* =========================================================
+   ISSUE DATE / TIME
+========================================================= */
+
+function updateForecastDate() {
+  const dateEl = document.getElementById("issue-date");
+  const dateInput = document.getElementById("issue-date-input");
+
+  const today = new Date();
+
+  const formattedDate = today.toLocaleDateString("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+
+  if (dateEl) {
+    dateEl.textContent = `Forecast Issued: ${formattedDate}`;
+  }
+
+  if (dateInput && !dateInput.value.trim()) {
+    dateInput.value = formattedDate;
+  }
+}
+
+function updateIssueTime() {
+  const issueEl = document.getElementById("issue-clock");
+
+  if (!issueEl) return;
+
+  const time = new Date().toLocaleTimeString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  });
+
+  issueEl.textContent = `Time of Issue: ${time} IST`;
+}
+
+/* =========================================================
+   TABLE BUILDING
+========================================================= */
 
 function createCloudDropdown(selectedValue = "Clear Sky") {
   return `
@@ -95,6 +154,10 @@ function applyCloudDropdownColor(select) {
     select.style.color = "#000000";
   }
 }
+
+/* =========================================================
+   GEOJSON NAME MATCHING
+========================================================= */
 
 const cloudGeoNameMap = {
   "Punjab": "Punjab",
@@ -191,6 +254,10 @@ function getSubdivisionColor(geoName, dayNumber) {
   return null;
 }
 
+/* =========================================================
+   NO FORECAST HATCH PATTERN
+========================================================= */
+
 function addNoForecastPattern(svg, patternId) {
   const defs = svg.append("defs");
 
@@ -215,12 +282,17 @@ function addNoForecastPattern(svg, patternId) {
     .attr("stroke-width", 1.3);
 }
 
+/* =========================================================
+   DRAW MAPS
+   This matches Wind Bulletin map size/flow
+========================================================= */
+
 async function drawCloudMap(svgId, dayNumber) {
   const svg = d3.select(svgId);
   svg.selectAll("*").remove();
 
   const width = 900;
-  const height = 430;
+  const height = 520;
   const patternId = `noForecastPatternCloudDay${dayNumber}`;
 
   svg
@@ -236,8 +308,8 @@ async function drawCloudMap(svgId, dayNumber) {
       .reflectY(true)
       .fitExtent(
         [
-          [90, 20],
-          [width - 210, height - 25]
+          [80, 25],
+          [width - 170, height - 35]
         ],
         data
       );
@@ -269,6 +341,10 @@ async function drawCloudMap(svgId, dayNumber) {
   }
 }
 
+/* =========================================================
+   UPDATE MAP COLORS
+========================================================= */
+
 function updateCloudMapColors() {
   updateSingleCloudMap("#cloudMapDay1", 1);
   updateSingleCloudMap("#cloudMapDay2", 2);
@@ -281,6 +357,10 @@ function updateSingleCloudMap(svgId, dayNumber) {
     return color || `url(#noForecastPatternCloudDay${dayNumber})`;
   });
 }
+
+/* =========================================================
+   LEGEND
+========================================================= */
 
 function buildLegend() {
   const finalCategories = [...CLOUD_CATEGORIES];
@@ -315,11 +395,18 @@ function buildLegend() {
   });
 }
 
+/* =========================================================
+   PDF DOWNLOAD
+   Same style approach as Wind Bulletin
+========================================================= */
+
 function downloadPDF() {
+  updateIssueTime();
+
   const element = document.getElementById("pdf-area");
 
   const opt = {
-    margin: 0.2,
+    margin: 0.3,
     filename: "Cloud_Forecast_Bulletin.pdf",
     image: {
       type: "jpeg",
@@ -333,7 +420,7 @@ function downloadPDF() {
       logging: false,
       scrollX: 0,
       scrollY: 0,
-      windowWidth: 980
+      windowWidth: 794
     },
     jsPDF: {
       unit: "in",
@@ -351,7 +438,14 @@ function downloadPDF() {
   html2pdf().set(opt).from(element).save();
 }
 
+/* =========================================================
+   INIT
+========================================================= */
+
 window.onload = function() {
+  updateForecastDate();
+  updateIssueTime();
+
   buildCloudTable();
   buildLegend();
 
