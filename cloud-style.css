@@ -488,4 +488,58 @@ body {
     page-break-before: always;
     break-before: page;
   }
+
+  async function drawCloudMap(svgId, dayNumber) {
+  const svg = d3.select(svgId);
+  svg.selectAll("*").remove();
+
+  const width = 760;
+  const height = 610;
+  const patternId = `noForecastPatternCloudDay${dayNumber}`;
+
+  svg
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet");
+
+  addNoForecastPattern(svg, patternId);
+
+  try {
+    const data = await loadCloudGeoJSON();
+
+    const projection = d3.geoIdentity()
+      .reflectY(true)
+      .fitExtent(
+        [
+          [35, 35],
+          [width - 130, height - 75]
+        ],
+        data
+      );
+
+    const path = d3.geoPath().projection(projection);
+
+    svg.selectAll("path")
+      .data(data.features)
+      .enter()
+      .append("path")
+      .attr("class", "cloud-map-region")
+      .attr("d", path)
+      .attr("fill", `url(#${patternId})`)
+      .attr("stroke", "#333")
+      .attr("stroke-width", 0.6)
+      .attr("data-geo-name", d => getGeoNameFromFeature(d));
+
+    updateCloudMapColors();
+
+  } catch (error) {
+    console.error("Final cloud map loading error:", error);
+
+    svg.append("text")
+      .attr("x", 20)
+      .attr("y", 40)
+      .attr("fill", "red")
+      .attr("font-size", 14)
+      .text("Map could not load. Check GeoJSON file path.");
+  }
+}
 }
