@@ -243,7 +243,7 @@ function addNoForecastPattern(svg, patternId) {
     .attr("y1", 0)
     .attr("x2", 0)
     .attr("y2", 10)
-    .attr("stroke", "#777")
+    .attr("stroke", "#777777")
     .attr("stroke-width", 1.4);
 }
 
@@ -251,8 +251,8 @@ async function drawCloudMap(svgId, dayNumber) {
   const svg = d3.select(svgId);
   svg.selectAll("*").remove();
 
-  const width = 860;
-  const height = 560;
+  const width = 760;
+  const height = 640;
   const patternId = `noForecastPatternCloudDay${dayNumber}`;
 
   svg
@@ -268,8 +268,8 @@ async function drawCloudMap(svgId, dayNumber) {
       .reflectY(true)
       .fitExtent(
         [
-          [45, 35],
-          [width - 190, height - 95]
+          [35, 35],
+          [width - 135, height - 90]
         ],
         data
       );
@@ -283,7 +283,7 @@ async function drawCloudMap(svgId, dayNumber) {
       .attr("class", "cloud-map-region")
       .attr("d", path)
       .attr("fill", `url(#${patternId})`)
-      .attr("stroke", "#333")
+      .attr("stroke", "#333333")
       .attr("stroke-width", 0.6)
       .attr("data-geo-name", d => getGeoNameFromFeature(d));
 
@@ -315,19 +315,25 @@ function updateSingleCloudMap(svgId, dayNumber) {
 }
 
 function buildLegend() {
+  const finalCategories = [...CLOUD_CATEGORIES];
+
+  if (!finalCategories.includes("No Forecast / Not Used")) {
+    finalCategories.push("No Forecast / Not Used");
+  }
+
   const labelMap = {
     "No Forecast / Not Used": "No Forecast Available"
   };
 
   const legendHTML = `
-    ${CLOUD_CATEGORIES.map(option => {
+    ${finalCategories.map(option => {
       const isNoForecast = option === "No Forecast / Not Used";
       const label = labelMap[option] || option;
 
       return `
         <div class="legend-item">
           <span class="legend-box ${isNoForecast ? "no-forecast-box" : ""}"
-                style="${!isNoForecast ? `background:${CLOUD_COLORS[option]}` : ""}">
+                style="${!isNoForecast ? `background:${CLOUD_COLORS[option] || "#ffffff"}` : ""}">
           </span>
           ${label}
         </div>
@@ -346,22 +352,30 @@ function downloadPDF() {
 
   const element = document.getElementById("pdf-area");
 
+  const originalWidth = element.style.width;
+  const originalMaxWidth = element.style.maxWidth;
+  const originalPadding = element.style.padding;
+
+  element.style.width = "780px";
+  element.style.maxWidth = "780px";
+  element.style.padding = "8px";
+
   const opt = {
-    margin: [0.1, 0.1, 0.1, 0.1],
+    margin: [0.12, 0.12, 0.12, 0.12],
     filename: "Cloud_Forecast_Bulletin.pdf",
     image: {
       type: "jpeg",
-      quality: 0.75
+      quality: 0.86
     },
     html2canvas: {
-      scale: 1.35,
+      scale: 1.25,
       useCORS: true,
       allowTaint: true,
       backgroundColor: "#ffffff",
       logging: false,
       scrollX: 0,
       scrollY: 0,
-      windowWidth: 980
+      windowWidth: 820
     },
     jsPDF: {
       unit: "in",
@@ -371,12 +385,20 @@ function downloadPDF() {
     },
     pagebreak: {
       mode: ["css", "legacy"],
-      before: [".maps-section", ".weather-section", ".map-block.page-break-map"],
-      avoid: [".map-block", ".map-wrapper", "svg"]
+      before: [".map-page", ".weather-section"],
+      avoid: [".map-wrapper", "svg", "tr"]
     }
   };
 
-  html2pdf().set(opt).from(element).save();
+  html2pdf()
+    .set(opt)
+    .from(element)
+    .save()
+    .then(() => {
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      element.style.padding = originalPadding;
+    });
 }
 
 window.onload = function() {
