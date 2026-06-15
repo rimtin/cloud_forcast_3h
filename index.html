@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nowcast Bulletin</title>
-  <title>3-Hourly Cloud Forecast Bulletin</title>
+
+  <title>Nowcast Bulletin - 3-Hourly Cloud Forecast Bulletin</title>
 
   <link rel="stylesheet" href="cloud-style.css" />
 
@@ -20,9 +20,11 @@
 
       <!-- PAGE 1: TITLE + CLASSIFICATION + FORECAST TABLE -->
       <section class="pdf-section first-section">
+
         <h2 class="nowcast-title">Nowcast Bulletin</h2>
+
         <h1 class="center-title">3-Hourly Cloud Forecast Bulletin</h1>
-  
+
         <h3 id="issue-date" class="issue-time"></h3>
         <h3 id="issue-clock" class="issue-clock"></h3>
 
@@ -84,13 +86,13 @@
               <th>State</th>
               <th>Districts / Geographical Area</th>
               <th>
-                <input type="text" value="1st hr" class="day-header-input">
+                <input type="text" value="1st hr" class="day-header-input" />
               </th>
               <th>
-                <input type="text" value="2nd hr" class="day-header-input">
+                <input type="text" value="2nd hr" class="day-header-input" />
               </th>
               <th>
-                <input type="text" value="3rd hr" class="day-header-input">
+                <input type="text" value="3rd hr" class="day-header-input" />
               </th>
             </tr>
           </thead>
@@ -145,7 +147,7 @@ Add cloud-related weather system notes here...
 
     </div>
 
-        <button id="downloadBtn" type="button" onclick="downloadPDF()">Download PDF</button>
+    <button id="downloadBtn" type="button" onclick="downloadPDF()">Download PDF</button>
 
   </div>
 
