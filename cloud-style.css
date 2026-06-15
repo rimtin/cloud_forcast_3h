@@ -462,9 +462,10 @@ body {
   }
 
   .nowcast-title {
+  text-align: center;
   font-size: 24px;
   font-weight: 800;
-  margin: 0 0 8px 48px;
+  margin: 0 0 18px 0;
   color: #000;
 }
   /* =========================================================
