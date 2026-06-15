@@ -122,6 +122,7 @@ body {
   width: 47%;
 }
 
+
 /* FORECAST TABLE WIDTHS */
 .forecast-table th:nth-child(1),
 .forecast-table td:nth-child(1) {
@@ -460,6 +461,12 @@ body {
     overflow: visible;
   }
 
+  .nowcast-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 8px 48px;
+  color: #000;
+}
   /* =========================================================
    MAP LEGEND + PDF MAP CUT FIX
    Add at the very end of cloud-style.css
